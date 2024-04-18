@@ -1,20 +1,27 @@
-import { View, Text, TextInput } from "react-native";
+import { View, Text, TextInput, Button } from "react-native";
 import { StyleSheet, Image } from "react-native";
 import React, { useState } from 'react';
 import { TouchableOpacity } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Modal } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 
 export default function Preference() {
     const [selectedValue, setSelectedValue] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedLabel, setSelectedLabel] = useState('');
+    const navigation = useNavigation();
 
+    const handleSubmit = () => {
+        navigation.navigate('Login')
+    }
     const showModal = () => setModalVisible(true);
     const hideModal = () => setModalVisible(false);
 
     return (
+        <>
+        
         <View style={styles.container}>
             <Image source={require('../assets/FF-Background-Removed.png')} style={styles.backgroundImage} />
             <View style={styles.contentContainer}>
@@ -75,8 +82,8 @@ export default function Preference() {
             </Modal>
             <View>
                 <TouchableOpacity
+                    onPress={handleSubmit}
                     title="Login"
-                    // onPress={handleSubmit}
                     style={{
                         backgroundColor: '#F24822',
                         width: 100,
@@ -89,7 +96,6 @@ export default function Preference() {
 
                 >
                     <Text
-                        // onPress={handleSubmit}
                         style={{
                             textAlign: "center",
                             color: "white",
@@ -102,6 +108,15 @@ export default function Preference() {
                 </TouchableOpacity>
             </View>
         </View>
+        <View style={{
+            backgroundColor: "#FFECEC",
+            padding: 20
+            }}>
+            <Button onPress={() => {
+                navigation.navigate("Login")
+            }} title="Skip for now" color="#F24822"/>
+        </View>
+        </>
     )
 }
 
