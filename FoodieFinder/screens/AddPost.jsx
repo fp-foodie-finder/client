@@ -1,18 +1,13 @@
 import { View, Text, Button, TextInput, ActivityIndicator } from "react-native";
 import { StyleSheet, Image } from "react-native";
-import { Link, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 import { ImageBackground } from "react-native";
 
+export default function AddPost() {
+    const navigation = useNavigation();
 
-
-
-
-export default function AddPost(){
-
-
-
-    return(
+    return (
         <>
             <View style={styles.container}>
                 <Image source={require('../assets/FF-Background-Removed.png')} style={styles.backgroundImage} />
@@ -66,7 +61,7 @@ export default function AddPost(){
                             fontSize: 15,
                         }}
                     >
-                        Caption
+                        Description
                     </Text>
                 </View>
                 <TextInput
@@ -86,7 +81,6 @@ export default function AddPost(){
 
                 <View>
                     <TouchableOpacity
-                        title="Login"
                         // onPress={handleSubmit}
                         style={{
                             backgroundColor: '#F24822',
@@ -99,7 +93,6 @@ export default function AddPost(){
 
                     >
                         <Text
-                            // onPress={handleSubmit}
                             style={{
                                 textAlign: "center",
                                 color: "white",
@@ -110,11 +103,13 @@ export default function AddPost(){
                             Share!
                         </Text>
                     </TouchableOpacity>
+                    <View>
+                        <Button onPress={() => {
+                            navigation.navigate('HomeScreen')
+                        }} title="Back to home" color="#F24822" />
+                    </View>
                 </View>
-
             </View>
-
-
         </>
     )
 }

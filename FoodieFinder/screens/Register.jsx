@@ -1,6 +1,6 @@
 import { View, Text, Button, TextInput, ActivityIndicator } from "react-native";
 import { StyleSheet, Image } from "react-native";
-import { Link, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 import { ImageBackground } from "react-native";
 
@@ -11,7 +11,11 @@ import { ImageBackground } from "react-native";
 
 
 export default function Register() {
+    const navigation = useNavigation();
 
+    const handleSubmit = () => {
+        navigation.navigate('Preference')
+    }
     return (
         <>
             <View style={styles.container}>
@@ -143,8 +147,8 @@ export default function Register() {
 
                 <View>
                     <TouchableOpacity
+                        onPress={handleSubmit}
                         title="register"
-                        // onPress={handleSubmit}
                         style={{
                             backgroundColor: '#F24822',
                             padding: 10,
@@ -157,7 +161,6 @@ export default function Register() {
 
                     >
                         <Text
-                            // onPress={handleSubmit}
                             style={{
                                 textAlign: "center",
                                 color: "white",
@@ -171,9 +174,9 @@ export default function Register() {
                     </TouchableOpacity>
                 </View>
                 <View>
-                    <Link to={'Login'}> 
-                            <Button title="Back to login" color="#F24822" />
-                    </Link>
+                <Button onPress={() => {
+                        navigation.navigate("Login")
+                    }} title="Back to login" color="#F24822" />
                 </View>
 
             </View>

@@ -1,9 +1,10 @@
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Preference from '../screens/Preference';
 import { Image, StyleSheet, Text, View, useColorScheme } from 'react-native';
 import AddPost from '../screens/AddPost';
 import Home from '../screens/Home';
+import { useNavigation } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const Tab = createBottomTabNavigator();
 
@@ -12,6 +13,8 @@ export function TabNavigator() {
     const tabBarColor = colorScheme === 'dark' ? '#F24822' : '#F24822';
     const outlineColor = colorScheme === 'dark' ? 'black' : 'black';
     const circleColor = colorScheme === 'dark' ? '#F24822' : '#F24822';
+
+    const navigation = useNavigation();
 
     return (
         <>
@@ -45,69 +48,21 @@ export function TabNavigator() {
                             />
                         </View>
                     ),
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                        fontFamily: 'Helvetica',
-                        color: 'black',
-                    },
                     tabBarStyle: {
                         backgroundColor: tabBarColor,
                         borderTopWidth: 1,
                         borderTopColor: '#F24822',
-                    }
+                    },
                 }}
             >
-                {/* <Tab.Screen
-                    name=' '
-                    component={AddPost}
-                    options={{
-                        tabBarIcon: ({ color, size }) => (
-                            <TabBarIcon
-                                color={color}
-                                size={size}
-                                iconColor='white'
-                                circleColor={circleColor}
-                                outlineColor={outlineColor}
-                            />
-                        ),
-                        headerLeft: () => (
-                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <AntDesign
-                                    name="arrowleft"
-                                    size={30}
-                                    style={{
-                                        display: 'flex',
-                                        marginBottom: 10,
-                                        padding: 3,
-                                        marginLeft: 10
-                                    }}
-                                />
-                                <Text style={{ color: 'black', fontSize: 20, marginBottom: 10 }}>Back</Text>
-                            </View>
-                        ),
-                        headerRight: () => (
-                            <View>
-                                <Image
-                                    source={require('../assets/FF-2.png')}
-                                    style={{
-                                        height: 35,
-                                        aspectRatio: 0.9,
-                                        marginTop: 10,
-                                        marginRight: 25,
-                                        marginBottom: 20
-                                    }}
-                                />
-                            </View>
-                        ),
-                        tabBarStyle: { display: 'none' }
-                    }}
-                /> */}
                 <Tab.Screen
-                    name='   '
+                    name='HomeScreen'
                     component={Home}
                     options={{
+                        headerTitle: ' ',
                         tabBarIcon: ({ color, size }) => (
                             <TabBarIcon
+                                onPress={() => navigation.navigate('AddPost')}
                                 color={color}
                                 size={size}
                                 iconColor='white'
@@ -115,6 +70,17 @@ export function TabNavigator() {
                                 outlineColor={outlineColor}
                             />
                         ),
+                        tabBarShowLabel: false,
+                    }}
+                />
+                <Tab.Screen
+                    name='AddPost'
+                    component={AddPost}
+                    options={{
+                        headerTitle: '',
+                        tabBarStyle: { display: 'none' },
+                        tabBarButton: () => null,
+                        
                     }}
                 />
             </Tab.Navigator>
@@ -122,13 +88,15 @@ export function TabNavigator() {
     );
 }
 
-const TabBarIcon = ({ color, size, iconColor, circleColor, outlineColor }) => (
+const TabBarIcon = ({ color, size, iconColor, circleColor, outlineColor, onPress }) => (
     <View style={styles.iconContainer}>
-        <View style={[styles.outlineCircle, { borderColor: outlineColor }]}>
-            <View style={[styles.icon, { backgroundColor: circleColor }]}>
-                <AntDesign name="plus" color={iconColor} size={size * 3} />
+        <TouchableOpacity onPress={onPress}>
+            <View style={[styles.outlineCircle, { borderColor: outlineColor }]}>
+                <View style={[styles.icon, { backgroundColor: circleColor }]}>
+                    <AntDesign name="plus" color={iconColor} size={size * 3} />
+                </View>
             </View>
-        </View>
+        </TouchableOpacity>
     </View>
 );
 

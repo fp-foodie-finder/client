@@ -17,10 +17,13 @@ export default function Home() {
                     placeholder="What are u craving for?"
                     style={styles.input}
                 />
-                {/* <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>Share!</Text>
-                </TouchableOpacity> */}
+                <View>
+                    <Text style={styles.text}>
+                        Having a problem with your craving for something? Ask us!
+                    </Text>
+                </View>
             </View>
+
         </View>
     )
 }
@@ -49,8 +52,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: '10%',
         right: '10%',
-        marginTop: 10,
-        padding: 5,
+        marginTop: 10
     },
     input: {
         height: 40,
@@ -73,4 +75,9 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
     },
+    text:{
+        flex: 1,
+        fontSize: 10,
+        marginLeft: 6
+    }
 });
