@@ -10,7 +10,7 @@ export default function Login() {
     const navigation = useNavigation();
 
     const handleSubmit = () => {
-        navigation.navigate('Home');
+        navigation.navigate('Preference');
     }
     return (
         <>
