@@ -1,13 +1,11 @@
 import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { View, Text, TextInput, Image, TouchableOpacity } from "react-native";
 import { StyleSheet } from "react-native";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 
-export default function Home() {
-    const navigator = useNavigation()
+export default function UserProfile() {
     const [isLiked, setIsLiked] = useState(false);
     const [isDisliked, setIsDisliked] = useState(false);
 
@@ -20,7 +18,7 @@ export default function Home() {
     };
 
     return (
-        <ScrollView style={{ backgroundColor: 'white' }}>
+        <ScrollView style={{ backgroundColor:  'white'}}>
             <View style={styles.container}>
                 {/* <View style={styles.circle}>
                     <ImageBackground
@@ -28,26 +26,27 @@ export default function Home() {
                         style={styles.backgroundImage}
                     />
                 </View> */}
-                <View style={styles.formContainer}>
-                    <TextInput
-                        placeholder="What are u craving for?"
-                        style={styles.input}
+                <View style={styles.profileHeader}>
+                    <Image
+                        source={{
+                            uri: 'https://plus.unsplash.com/premium_photo-1663858367001-89e5c92d1e0e?q=80&w=3715&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                        }}
+                        style={styles.avatarHeader}
                     />
                     <View>
-                        <Text style={styles.text}>
-                            Having a problem with your craving for something? Ask us!
-                        </Text>
+                        <Text style={styles.username}> Ganjar </Text>
+                        <Text style={styles.Pref}>Preference Food: Western Food</Text>
                     </View>
                 </View>
                 <View>
                     <View style={styles.containerCard}>
-                        <TouchableOpacity style={styles.header} onPress={() => navigator.navigate('UserProfile')}>
+                        <View style={styles.header}>
                             <Image source={{ uri: `https://plus.unsplash.com/premium_photo-1663858367001-89e5c92d1e0e?q=80&w=3715&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D` }} style={styles.avatar} />
                             <View>
                                 <Text style={styles.author}>Ganjar</Text>
                                 <Text style={styles.time}>2 hours ago</Text>
                             </View>
-                        </TouchableOpacity>
+                        </View>
                         <Text style={styles.content}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio, nam, fugit vel delectus libero, unde officiis enim incidunt cupiditate dolore impedit natus nobis minus rerum ratione magnam quam sunt. Dolorum.</Text>
                         <Image source={{ uri: `https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=3570&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D` }} style={styles.image} />
                         <TouchableOpacity>
@@ -82,13 +81,13 @@ export default function Home() {
                 </View>
                 <View>
                     <View style={styles.containerCard}>
-                        <TouchableOpacity style={styles.header} onPress={() => navigator.navigate('UserProfile')}>
+                        <View style={styles.header}>
                             <Image source={{ uri: `https://plus.unsplash.com/premium_photo-1663858367001-89e5c92d1e0e?q=80&w=3715&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D` }} style={styles.avatar} />
                             <View>
                                 <Text style={styles.author}>Ganjar</Text>
                                 <Text style={styles.time}>2 hours ago</Text>
                             </View>
-                        </TouchableOpacity>
+                        </View>
                         <Text style={styles.content}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio, nam, fugit vel delectus libero, unde officiis enim incidunt cupiditate dolore impedit natus nobis minus rerum ratione magnam quam sunt. Dolorum.</Text>
                         <Image source={{ uri: `https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=3570&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D` }} style={styles.image} />
                         <TouchableOpacity>
@@ -123,13 +122,13 @@ export default function Home() {
                 </View>
                 <View>
                     <View style={styles.containerCard}>
-                        <TouchableOpacity style={styles.header} onPress={() => navigator.navigate('UserProfile')}>
+                        <View style={styles.header}>
                             <Image source={{ uri: `https://plus.unsplash.com/premium_photo-1663858367001-89e5c92d1e0e?q=80&w=3715&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D` }} style={styles.avatar} />
                             <View>
                                 <Text style={styles.author}>Ganjar</Text>
                                 <Text style={styles.time}>2 hours ago</Text>
                             </View>
-                        </TouchableOpacity>
+                        </View>
                         <Text style={styles.content}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio, nam, fugit vel delectus libero, unde officiis enim incidunt cupiditate dolore impedit natus nobis minus rerum ratione magnam quam sunt. Dolorum.</Text>
                         <Image source={{ uri: `https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=3570&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D` }} style={styles.image} />
                         <TouchableOpacity>
@@ -163,7 +162,7 @@ export default function Home() {
                     </View>
                 </View>
             </View>
-        </ScrollView >
+        </ScrollView>
     )
 }
 
@@ -193,9 +192,8 @@ const styles = StyleSheet.create({
         right: 0,
     },
     formContainer: {
-        flex: 1,
-        left: 20,
-        right: 40,
+        left: '10%',
+        right: '10%',
         marginTop: 10,
         width: 350
     },
@@ -223,11 +221,10 @@ const styles = StyleSheet.create({
     text: {
         flex: 1,
         fontSize: 12,
-        marginLeft: 6,
-        marginBottom: 10,
+        marginLeft: 6
     },
     containerCard: {
-        flex: 1,
+        flex:1,
         borderRadius: 8,
         padding: 15,
         elevation: 2,
@@ -271,5 +268,42 @@ const styles = StyleSheet.create({
     commentButton: {
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    profileHeader: {
+        flexDirection: "row",
+        alignItems: "center",
+        padding: 16,
+        borderBottomColor: 'black',
+        borderBottomWidth: 1,
+        marginHorizontal: 15,
+        borderStyle: 'solid'
+    },
+    avatarHeader: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        marginRight: 16,
+        marginLeft: 16,
+        marginTop: 20
+    },
+    username: {
+        fontSize: 24,
+        fontWeight: "bold",
+        marginTop: 20
+    },
+    settingsButton: {
+        marginTop: 25,
+        marginLeft: 120
+    },
+    settingsButtonPost: {
+        position: 'absolute',
+        right: 20,
+        bottom: 10
+    },
+    Pref: {
+        fontSize: 12,
+        color: '#555',
+        marginLeft:8,
+        marginTop: 5
     }
 });

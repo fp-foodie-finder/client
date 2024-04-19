@@ -2,10 +2,6 @@ import { View, Text, Button, TextInput, ActivityIndicator } from "react-native";
 import { StyleSheet, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
-import { ImageBackground } from "react-native";
-
-
-
 
 
 
