@@ -3,7 +3,6 @@ import { TabNavigator } from "./TabNavigator";
 import Preference from "../screens/Preference";
 import Register from "../screens/Register";
 import Login from "../screens/Login";
-import { CardStyleInterpolators } from "@react-navigation/native";
 
 
 const Stack = createNativeStackNavigator();

@@ -2,7 +2,6 @@ import { View, Text, Button, TextInput, ActivityIndicator } from "react-native";
 import { StyleSheet, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
-import { ImageBackground } from "react-native";
 
 export default function AddPost() {
     const navigation = useNavigation();
@@ -119,7 +118,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         paddingBottom: 150,
-        backgroundColor: '#FFECEC',
+        backgroundColor: 'white',
     },
     backgroundImage: {
         flex: 1,

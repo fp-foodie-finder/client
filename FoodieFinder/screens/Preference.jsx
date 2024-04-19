@@ -136,12 +136,12 @@ const styles = StyleSheet.create({
     contentContainer: {
         justifyContent: 'center',
         alignItems: 'center',
+        flex: 1
     },
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-
     },
     picker: {
         width: '80%',
