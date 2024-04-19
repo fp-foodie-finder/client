@@ -14,7 +14,7 @@ export default function Register() {
     const navigation = useNavigation();
 
     const handleSubmit = () => {
-        navigation.navigate('Preference')
+        navigation.navigate('Login')
     }
     return (
         <>

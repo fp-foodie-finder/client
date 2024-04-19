@@ -14,7 +14,7 @@ export default function Preference() {
     const navigation = useNavigation();
 
     const handleSubmit = () => {
-        navigation.navigate('Login')
+        navigation.navigate('Home')
     }
     const showModal = () => setModalVisible(true);
     const hideModal = () => setModalVisible(false);
