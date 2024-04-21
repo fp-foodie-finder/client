@@ -8,6 +8,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import MainProfile from '../screens/MainProfile';
 import UserProfile from '../screens/UserProfile';
 import PreferenceProfile from '../screens/PreferenceProfile';
+import Favourite from '../screens/Favorite';
 
 const Tab = createBottomTabNavigator();
 
@@ -184,6 +185,44 @@ export function TabNavigator() {
                 <Tab.Screen
                     name='PreferenceProfile'
                     component={PreferenceProfile}
+                    options={{
+                        headerTitle: '',
+                        tabBarStyle: { display: 'none' },
+                        tabBarButton: () => null,
+                        tabBarShowLabel: false,
+                        headerRight: () => (
+                            <View>
+                                <Image
+                                    source={require('../assets/FF-2.png')}
+                                    style={{
+                                        height: 35,
+                                        aspectRatio: 0.9,
+                                        marginTop: 10,
+                                        marginRight: 25,
+                                        marginBottom: 20
+                                    }}
+                                />
+                            </View>
+                        ),
+                        headerLeft: () => (
+                            <AntDesign
+                                onPress={() => navigation.navigate('MainProfile')}
+                                color={"#F24822"}
+                                name="back"
+                                size={35}
+                                style={{
+                                    display: 'flex',
+                                    marginBottom: 10,
+                                    padding: 3,
+                                    marginLeft: 10
+                                }}
+                            />
+                        ),
+                    }}
+                />
+                <Tab.Screen
+                    name='MyFavorites'
+                    component={Favourite}
                     options={{
                         headerTitle: '',
                         tabBarStyle: { display: 'none' },
