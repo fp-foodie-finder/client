@@ -24,7 +24,8 @@ export default function Register() {
 
       await axios({
         method: "post",
-        url: "http://localhost:3000/register",
+        // url: process.env.BASE_URL + "/register",
+        url: "https://9e6c-180-252-163-181.ngrok-free.app/register",
         data: input,
       });
       alert("Your account has been successfully created");
