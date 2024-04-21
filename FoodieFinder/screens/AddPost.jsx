@@ -2,10 +2,37 @@ import { View, Text, Button, TextInput, ActivityIndicator } from "react-native";
 import { StyleSheet, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
+import { useState } from "react";
+import axios from "axios";
+import * as SecureStore from "expo-secure-store";
 
 export default function AddPost() {
     const navigation = useNavigation();
+    const [imageUrl, setImageUrl] = useState("");
+    const [description, setDescription] = useState("");
 
+    const handleSubmit = async () => {
+        try {
+          const input = {
+            imageUrl,
+            description,
+          };
+    
+            await axios({
+            method: "post",
+            // url: process.env.BASE_URL + "/register",
+            url: "https://9e6c-180-252-163-181.ngrok-free.app/post",
+            data: input,
+            headers: {
+              Authorization: `Bearer ${await SecureStore.getItemAsync("token")}`,
+            }   
+          });
+          alert("Your post has been successfully created");
+          navigation.navigate("HomeScreen");
+        } catch (error) {
+          alert(error.response.data.message);
+        }
+    };
     return (
         <>
             <View style={styles.container}>
@@ -49,6 +76,8 @@ export default function AddPost() {
                         margin: 5,
                         marginBottom: 15
                     }}
+                    name="imageUrl"
+                    onChangeText={setImageUrl}
                 />
                 <View style={{ alignItems: 'flex-start', width: '70%' }}>
                     <Text
@@ -76,11 +105,13 @@ export default function AddPost() {
                         margin: 5,
                         alignItems: 'center'
                     }}
+                    name="description"
+                    onChangeText={setDescription}
                 />
 
                 <View>
                     <TouchableOpacity
-                        // onPress={handleSubmit}
+                        onPress={handleSubmit}
                         style={{
                             backgroundColor: '#F24822',
                             padding: 10,
