@@ -8,6 +8,10 @@ import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 export default function MainProfile() {
     const navigation = useNavigation()
 
+    const handleFavoritesPress = () => {
+        navigation.navigate('MyFavorites');
+      };
+
     return (
         <ScrollView style={{ backgroundColor: 'white' }}>
             <View style={styles.container}>
@@ -26,6 +30,9 @@ export default function MainProfile() {
                     />
                     <View>
                         <Text style={styles.username}> John Doe </Text>
+                        <TouchableOpacity onPress={handleFavoritesPress}>
+                            <Text style={styles.fav}>My Favorites →</Text>
+                        </TouchableOpacity>
                     </View>
                     <TouchableOpacity style={styles.settingsButton} onPress={() => navigation.navigate('PreferenceProfile')}>
                         <AntDesign name="setting" size={30} color="#333" />
@@ -41,7 +48,7 @@ export default function MainProfile() {
                             </View>
                         </View>
                         <View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <AntDesign
                                     name='like2'
                                     size={25}
@@ -79,7 +86,7 @@ export default function MainProfile() {
                             </View>
                         </View>
                         <View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <AntDesign
                                     name='like2'
                                     size={25}
@@ -117,7 +124,7 @@ export default function MainProfile() {
                             </View>
                         </View>
                         <View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <AntDesign
                                     name='like2'
                                     size={25}
@@ -155,7 +162,7 @@ export default function MainProfile() {
                             </View>
                         </View>
                         <View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <AntDesign
                                     name='like2'
                                     size={25}
@@ -193,7 +200,7 @@ export default function MainProfile() {
                             </View>
                         </View>
                         <View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <AntDesign
                                     name='like2'
                                     size={25}
@@ -357,13 +364,8 @@ const styles = StyleSheet.create({
     username: {
         fontSize: 24,
         fontWeight: "bold",
-        marginTop: 20
-    },
-    settingsButton: {
-        flex: 1,
-        marginTop: 25,
-        left: 80,
-        padding: 10
+        marginTop: 20,
+        marginRight: 25
     },
     settingsButtonPost: {
         flexDirection: 'row',
@@ -373,5 +375,21 @@ const styles = StyleSheet.create({
     insight: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
+    },
+    settingsButton: {
+        flex: 1,
+        marginTop: 25,
+        alignItems: 'flex-end'
+    },
+    // loveButton: {
+    //     flex: 1,
+    //     marginTop: 25,
+    //     marginLeft: 20,
+    //     marginRight: 15
+    // },
+    fav: {
+        color: '#555',
+        marginLeft: 5,
+        marginTop: 2
     }
 });
