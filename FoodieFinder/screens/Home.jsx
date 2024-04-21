@@ -1,15 +1,22 @@
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
-import { View, Text, TextInput, Image, TouchableOpacity } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, TextInput, Image, TouchableOpacity, Modal } from "react-native";
 import { StyleSheet } from "react-native";
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
 
 
 export default function Home() {
     const navigator = useNavigation()
     const [isLiked, setIsLiked] = useState(false);
     const [isDisliked, setIsDisliked] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isInputFocused, setIsInputFocused] = useState(false);
+    const [textInputValue, setTextInputValue] = useState('');
+    const [textInputKey, setTextInputKey] = useState(0);
+    const [isAddedToFavorites, setIsAddedToFavorites] = useState(false);
+    const [prevScrollPosition, setPrevScrollPosition] = useState(0);
+
 
 
     const toggleLike = () => {
@@ -18,6 +25,42 @@ export default function Home() {
     const toggleDislike = () => {
         setIsDisliked(!isDisliked);
     };
+    const openModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const closeModal = () => {
+        setIsModalVisible(false);
+    };
+
+    const handleFocus = () => {
+        setIsInputFocused(true);
+    };
+
+    const handleBlur = () => {
+        setIsInputFocused(false);
+    };
+
+    const handleSubmit = () => {
+        openModal();
+    };
+
+    const resetTextInput = () => {
+        setTextInputKey(prevKey => prevKey + 1);
+        setTextInputValue('');
+    };
+
+    const handleAddToFavorites = () => {
+        setIsAddedToFavorites(!isAddedToFavorites);
+    };
+
+    useEffect(() => {
+        const unsubscribe = navigator.addListener('focus', () => {
+            resetTextInput();
+        });
+
+        return unsubscribe;
+    }, [navigator]);
 
     return (
         <ScrollView style={{ backgroundColor: 'white' }}>
@@ -29,16 +72,132 @@ export default function Home() {
                     />
                 </View> */}
                 <View style={styles.formContainer}>
-                    <TextInput
-                        placeholder="What are u craving for?"
-                        style={styles.input}
-                    />
-                    <View>
-                        <Text style={styles.text}>
-                            Having a problem with your craving for something? Ask us!
-                        </Text>
+                    <View style={[styles.inputContainer, { marginBottom: isInputFocused ? 1 : 1 }]}>
+                        <TextInput
+                            key={textInputKey}
+                            placeholder="What are u craving for?"
+                            style={[styles.input, { flex: isInputFocused ? 1 : 1 }]}
+                            value={textInputValue}
+                            onChangeText={setTextInputValue}
+                            onFocus={handleFocus}
+                            onBlur={handleBlur}
+                        />
+                        {isInputFocused &&
+                            <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+                                <Text style={styles.submitButtonText}>→</Text>
+                            </TouchableOpacity>
+                        }
                     </View>
                 </View>
+                <View style={styles.textContainer}>
+                    <Text style={styles.text}>
+                        Having a problem with your craving for something?{' '}
+                    </Text>
+                    <TouchableOpacity onPress={() => navigator.navigate('AskUsPage')}>
+                        <Text style={styles.askUsLink}>Ask us!</Text>
+                    </TouchableOpacity>
+                </View>
+                <Modal
+                    visible={isModalVisible}
+                    animationType="slide"
+                    transparent={true}
+                    onRequestClose={closeModal}
+                >
+                    <ScrollView
+                        // contentContainerStyle={{ flexGrow: 1 }}
+                        // scrollEventThrottle={16}
+                        // onScroll={(event) => {
+                        //     const offsetY = event.nativeEvent.contentOffset.y;
+                        //     if (offsetY < prevScrollPosition) {
+                        //         closeModal();
+                        //     }
+                        //     setPrevScrollPosition(offsetY);
+                        // }}
+                    >
+                        <View style={styles.modalContainer}>
+                            <View style={styles.modalContent}>
+                                <View style={styles.containerCardModal}>
+                                    <View style={styles.headerModal}>
+                                        <Image source={{ uri: `https://places.googleapis.com/v1/places/ChIJfcIV9oDxaS4R6itwY7-PVYM/photos/ATplDJZO0xdoCJ5e2qzMwtjfRtd90oyX-DCDD3BCvTJ8HuCH2uYcrrftXXy6XYCYjaBhtfhVDulBH6AllDAvpIYIBIdIjnPRL8gidikUS14V0auUgVdrpayuFF-10iFZ4gmFnqzDhZYQeSxU6oWLn8H1cWfHhrT4soBmvDaI/media?key=AIzaSyA5TgEC55u00aGOvmvgCS2sDxQwi5JiuYY&maxWidthPx=2880` }} style={styles.avatarModal} />
+                                    </View>
+                                    <View style={styles.headerText}>
+                                        <Text style={styles.authorModal}>Pizza Hut Ristorante</Text>
+                                        <Text style={styles.addressModal}>Jl. Kemang Raya No.77, RT.4/RW.2, Bangka, Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12730, Indonesia</Text>
+                                        <View style={styles.ratingContainer}>
+                                            <Text style={styles.rating}>⭐ 4.6</Text>
+                                        </View>
+                                        <TouchableOpacity onPress={() => handleAddToFavorites()} style={styles.favoriteButton}>
+                                            <Text style={styles.favoriteButtonText}>{isAddedToFavorites ? "Added" : "Add to favorites"}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                <View style={styles.containerCardModal}>
+                                    <View style={styles.headerModal}>
+                                        <Image source={{ uri: `https://places.googleapis.com/v1/places/ChIJfcIV9oDxaS4R6itwY7-PVYM/photos/ATplDJZO0xdoCJ5e2qzMwtjfRtd90oyX-DCDD3BCvTJ8HuCH2uYcrrftXXy6XYCYjaBhtfhVDulBH6AllDAvpIYIBIdIjnPRL8gidikUS14V0auUgVdrpayuFF-10iFZ4gmFnqzDhZYQeSxU6oWLn8H1cWfHhrT4soBmvDaI/media?key=AIzaSyA5TgEC55u00aGOvmvgCS2sDxQwi5JiuYY&maxWidthPx=2880` }} style={styles.avatarModal} />
+                                    </View>
+                                    <View style={styles.headerText}>
+                                        <Text style={styles.authorModal}>Pizza Hut Ristorante</Text>
+                                        <Text style={styles.addressModal}>Jl. Kemang Raya No.77, RT.4/RW.2, Bangka, Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12730, Indonesia</Text>
+                                        <View style={styles.ratingContainer}>
+                                            <Text style={styles.rating}>⭐ 4.6</Text>
+                                        </View>
+                                        <TouchableOpacity onPress={() => handleAddToFavorites()} style={styles.favoriteButton}>
+                                            <Text style={styles.favoriteButtonText}>{isAddedToFavorites ? "Added" : "Add to favorites"}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                <View style={styles.containerCardModal}>
+                                    <View style={styles.headerModal}>
+                                        <Image source={{ uri: `https://places.googleapis.com/v1/places/ChIJfcIV9oDxaS4R6itwY7-PVYM/photos/ATplDJZO0xdoCJ5e2qzMwtjfRtd90oyX-DCDD3BCvTJ8HuCH2uYcrrftXXy6XYCYjaBhtfhVDulBH6AllDAvpIYIBIdIjnPRL8gidikUS14V0auUgVdrpayuFF-10iFZ4gmFnqzDhZYQeSxU6oWLn8H1cWfHhrT4soBmvDaI/media?key=AIzaSyA5TgEC55u00aGOvmvgCS2sDxQwi5JiuYY&maxWidthPx=2880` }} style={styles.avatarModal} />
+                                    </View>
+                                    <View style={styles.headerText}>
+                                        <Text style={styles.authorModal}>Pizza Hut Ristorante</Text>
+                                        <Text style={styles.addressModal}>Jl. Kemang Raya No.77, RT.4/RW.2, Bangka, Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12730, Indonesia</Text>
+                                        <View style={styles.ratingContainer}>
+                                            <Text style={styles.rating}>⭐ 4.6</Text>
+                                        </View>
+                                        <TouchableOpacity onPress={() => handleAddToFavorites()} style={styles.favoriteButton}>
+                                            <Text style={styles.favoriteButtonText}>{isAddedToFavorites ? "Added" : "Add to favorites"}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                <View style={styles.containerCardModal}>
+                                    <View style={styles.headerModal}>
+                                        <Image source={{ uri: `https://places.googleapis.com/v1/places/ChIJfcIV9oDxaS4R6itwY7-PVYM/photos/ATplDJZO0xdoCJ5e2qzMwtjfRtd90oyX-DCDD3BCvTJ8HuCH2uYcrrftXXy6XYCYjaBhtfhVDulBH6AllDAvpIYIBIdIjnPRL8gidikUS14V0auUgVdrpayuFF-10iFZ4gmFnqzDhZYQeSxU6oWLn8H1cWfHhrT4soBmvDaI/media?key=AIzaSyA5TgEC55u00aGOvmvgCS2sDxQwi5JiuYY&maxWidthPx=2880` }} style={styles.avatarModal} />
+                                    </View>
+                                    <View style={styles.headerText}>
+                                        <Text style={styles.authorModal}>Pizza Hut Ristorante</Text>
+                                        <Text style={styles.addressModal}>Jl. Kemang Raya No.77, RT.4/RW.2, Bangka, Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12730, Indonesia</Text>
+                                        <View style={styles.ratingContainer}>
+                                            <Text style={styles.rating}>⭐ 4.6</Text>
+                                        </View>
+                                        <TouchableOpacity onPress={() => handleAddToFavorites()} style={styles.favoriteButton}>
+                                            <Text style={styles.favoriteButtonText}>{isAddedToFavorites ? "Added" : "Add to favorites"}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                <View style={styles.containerCardModal}>
+                                    <View style={styles.headerModal}>
+                                        <Image source={{ uri: `https://places.googleapis.com/v1/places/ChIJfcIV9oDxaS4R6itwY7-PVYM/photos/ATplDJZO0xdoCJ5e2qzMwtjfRtd90oyX-DCDD3BCvTJ8HuCH2uYcrrftXXy6XYCYjaBhtfhVDulBH6AllDAvpIYIBIdIjnPRL8gidikUS14V0auUgVdrpayuFF-10iFZ4gmFnqzDhZYQeSxU6oWLn8H1cWfHhrT4soBmvDaI/media?key=AIzaSyA5TgEC55u00aGOvmvgCS2sDxQwi5JiuYY&maxWidthPx=2880` }} style={styles.avatarModal} />
+                                    </View>
+                                    <View style={styles.headerText}>
+                                        <Text style={styles.authorModal}>Pizza Hut Ristorante</Text>
+                                        <Text style={styles.addressModal}>Jl. Kemang Raya No.77, RT.4/RW.2, Bangka, Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12730, Indonesia</Text>
+                                        <View style={styles.ratingContainer}>
+                                            <Text style={styles.rating}>⭐ 4.6</Text>
+                                        </View>
+                                        <TouchableOpacity onPress={() => handleAddToFavorites()} style={styles.favoriteButton}>
+                                            <Text style={styles.favoriteButtonText}>{isAddedToFavorites ? "Added" : "Add to favorites"}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                <TouchableOpacity onPress={closeModal} style={styles.closeButtonContainer}>
+                                    <Text style={styles.closeButton}>Close</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </ScrollView>
+                </Modal>
                 <View>
                     <View style={styles.containerCard}>
                         <TouchableOpacity style={styles.header} onPress={() => navigator.navigate('UserProfile')}>
@@ -196,8 +355,7 @@ const styles = StyleSheet.create({
         flex: 1,
         left: 20,
         right: 40,
-        marginTop: 10,
-        width: 350
+        width: 350,
     },
     input: {
         height: 40,
@@ -206,9 +364,9 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         borderWidth: 1,
         borderColor: '#F24822',
-        marginBottom: 10,
         paddingHorizontal: 10,
-        marginTop: 10
+        marginTop: 10,
+        marginRight: 5,
     },
     button: {
         backgroundColor: '#F24822',
@@ -221,10 +379,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     text: {
-        flex: 1,
+        left: 20,
         fontSize: 12,
-        marginLeft: 6,
-        marginBottom: 10,
+        marginLeft: 5
     },
     containerCard: {
         flex: 1,
@@ -271,5 +428,158 @@ const styles = StyleSheet.create({
     commentButton: {
         flexDirection: 'row',
         alignItems: 'center',
-    }
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'white',
+    },
+    modalText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        color: 'black',
+    },
+    closeButtonContainer: {
+        bottom: 10,
+        alignItems: 'center',
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    submitButton: {
+        backgroundColor: '#F24822',
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        borderRadius: 5,
+        marginTop: 10,
+        height: 40,
+        width: 40,
+    },
+    submitButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    askUsLink: {
+        color: '#F24822',
+        fontSize: 12,
+        fontWeight: 'bold',
+        marginLeft: 20,
+    },
+    textContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 3
+    },
+    modalOverlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'white',
+    },
+    modalContainer: {
+        flex: 1,
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        top: 20
+    },
+    cardContainer: {
+        backgroundColor: 'white',
+        marginBottom: 20,
+        borderRadius: 8,
+        padding: 20,
+        width: '100%',
+        maxHeight: '100%',
+        elevation: 5,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+    },
+    cardTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    cardContent: {
+        fontSize: 16,
+    },
+    closeButtonContainer: {
+        marginTop: 20,
+    },
+    closeButton: {
+        marginTop: 50,
+        marginBottom: 100,
+        fontSize: 25,
+        color: 'red',
+    },
+    modalContent: {
+        flex: 1,
+        width: '90%',
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    headerText: {
+        padding: 10
+    },
+    containerCardModal: {
+        backgroundColor: "white",
+        shadowColor: "#000",
+        shadowOpacity: 0.5,
+        shadowOffset: 1,
+        elevation: 2,
+        position: 'relative',
+        opacity: 1,
+        zIndex: 1,
+        marginLeft: 10,
+        marginRight: 10,
+        borderRadius: 20,
+        marginTop: 50,
+    },
+    headerModal: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    avatarModal: {
+        width: '100%',
+        height: 120,
+        marginRight: 8,
+        borderTopRightRadius: 20,
+        borderTopLeftRadius: 20,
+    },
+    addressModal: {
+        fontSize: 14,
+        color: '#555',
+        marginBottom: 5
+    },
+    authorModal: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        paddingBottom: 5
+    },
+    ratingContainer: {
+        borderWidth: 1,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 20,
+        alignSelf: 'flex-start',
+        marginTop: 5,
+    },
+    favoriteButtonText: {
+        position: 'absolute',
+        bottom: 5,
+        right: 10,
+        color: 'red',
+        fontWeight: 'bold',
+        fontSize: 13,
+    },
 });
