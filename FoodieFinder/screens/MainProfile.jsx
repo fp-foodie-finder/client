@@ -10,7 +10,7 @@ export default function MainProfile() {
 
     const handleFavoritesPress = () => {
         navigation.navigate('MyFavorites');
-      };
+    };
 
     return (
         <ScrollView style={{ backgroundColor: 'white' }}>
