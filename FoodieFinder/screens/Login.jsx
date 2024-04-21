@@ -5,11 +5,13 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import AuthContext from "../context/auth";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setIsSignedIn } = useContext(AuthContext);
+  const navigation = useNavigation();
 
   const handleSubmit = async () => {
     try {
