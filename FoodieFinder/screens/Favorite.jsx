@@ -29,7 +29,9 @@ export default function Favourite() {
                             <View style={styles.ratingContainer}>
                                 <Text style={styles.rating}>⭐ 4.6</Text>
                             </View>
-                            <Text style={styles.delete}>Delete</Text>
+                            <TouchableOpacity>
+                                <Text style={styles.delete}>Delete</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                     <View style={styles.containerCard}>
@@ -42,7 +44,9 @@ export default function Favourite() {
                             <View style={styles.ratingContainer}>
                                 <Text style={styles.rating}>⭐ 4.6</Text>
                             </View>
-                            <Text style={styles.delete}>Delete</Text>
+                            <TouchableOpacity>
+                                <Text style={styles.delete}>Delete</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </View>
@@ -221,9 +225,10 @@ const styles = StyleSheet.create({
     },
     delete: {
         position: 'absolute',
-        bottom: 10,
+        bottom: 5,
         right: 10,
         color: 'red',
         fontWeight: 'bold',
+        fontSize: 16,
     },
 });
