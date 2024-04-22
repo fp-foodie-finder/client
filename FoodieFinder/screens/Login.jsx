@@ -31,7 +31,7 @@ export default function Login() {
 
       setIsSignedIn(true);
     } catch (error) {
-      alert(error.message);
+      alert(error.response.data.message);
     }
   };
   return (

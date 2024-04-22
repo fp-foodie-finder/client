@@ -69,6 +69,18 @@ export default function MainProfile() {
                 />
               </TouchableOpacity>
             </View>
+            <View>
+              <Text
+                style={{
+                  fontSize: 24,
+                  fontWeight: "bold",
+                  marginLeft: 10,
+                  marginBottom: 20,
+                  marginTop: 10,
+                }}>
+                My Posts
+              </Text>
+            </View>
             {item.posts.map((item, index) => (
               <View key={index}>
                 <View style={styles.containerCard}>
