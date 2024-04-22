@@ -1,5 +1,6 @@
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import {
   View,
@@ -11,6 +12,7 @@ import {
 } from "react-native";
 import { StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import * as SecureStore from "expo-secure-store";
 
 export default function Home() {
   const navigator = useNavigation();
@@ -18,9 +20,10 @@ export default function Home() {
   const [isDisliked, setIsDisliked] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
-  const [textInputValue, setTextInputValue] = useState("");
   const [textInputKey, setTextInputKey] = useState(0);
   const [isAddedToFavorites, setIsAddedToFavorites] = useState(false);
+  const [datas, setDatas] = useState("");
+  const [textQuery, setTextQuery] = useState("");
 
   const toggleLike = () => {
     setIsLiked(!isLiked);
@@ -43,18 +46,52 @@ export default function Home() {
   const handleBlur = () => {
     setIsInputFocused(false);
   };
-
+  
   const handleSubmit = () => {
     openModal();
+  const handleSubmit = async () => {
+    try {
+      const input = {
+        textQuery,
+      };
+      const { data } = await axios({
+        method: "post",
+        url: "https://9e6c-180-252-163-181.ngrok-free.app/maps",
+        data: input,
+        headers: {
+          Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
+        },
+      });
+      setDatas(data);
+      openModal();
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   const resetTextInput = () => {
     setTextInputKey((prevKey) => prevKey + 1);
-    setTextInputValue("");
+    setTextQuery("");
   };
 
-  const handleAddToFavorites = () => {
-    setIsAddedToFavorites(!isAddedToFavorites);
+  const handleAddToFavorites = async (index) => {
+    try {
+      const input = {
+        textQuery,
+      };
+      await axios({
+        method: "post",
+        url: "https://9e6c-180-252-163-181.ngrok-free.app/favorite/" + index,
+        data: input,
+        headers: {
+          Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
+        },
+      });
+      alert("Restaurant has been successfully added to favorites");
+      setIsAddedToFavorites(!isAddedToFavorites);
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   useEffect(() => {
@@ -78,10 +115,10 @@ export default function Home() {
               key={textInputKey}
               placeholder="What are u craving for?"
               style={[styles.input, { flex: isInputFocused ? 1 : 1 }]}
-              value={textInputValue}
-              onChangeText={setTextInputValue}
+              onChangeText={setTextQuery}
               onFocus={handleFocus}
               onBlur={handleBlur}
+              name="textQuery"
             />
             <TouchableOpacity
               style={styles.submitButton}
@@ -94,7 +131,7 @@ export default function Home() {
           <Text style={styles.text}>
             Having a problem with your craving for something?{" "}
           </Text>
-          <TouchableOpacity onPress={() => navigator.navigate("AskUsPage")}>
+          <TouchableOpacity onPress={() => navigator.navigate("AskUs")}>
             <Text style={styles.askUsLink}>Ask us!</Text>
           </TouchableOpacity>
         </View>
@@ -246,6 +283,45 @@ export default function Home() {
                     </TouchableOpacity>
                   </View>
                 </View>
+                {datas &&
+                  datas?.data?.places?.map((item, index) => (
+                    <View style={styles.containerCardModal} key={index}>
+                      <View style={styles.headerModal}>
+                        {item &&
+                          item.photos &&
+                          item.photos.length > 0 &&
+                          item.photos[0].name && (
+                            <Image
+                              source={{
+                                uri: `https://places.googleapis.com/v1/${item?.photos[0]?.name}/media?key=AIzaSyD8hdZF3fs3AJ35R9Dc3gBk7IJ0ZeoGH9Q&maxWidthPx=360`,
+                              }}
+                              style={styles.avatarModal}
+                            />
+                          )}
+                      </View>
+                      <View style={styles.headerText}>
+                        <Text style={styles.authorModal}>
+                          {item?.displayName?.text}
+                        </Text>
+                        <Text style={styles.addressModal}>
+                          {item?.formattedAddress}
+                        </Text>
+                        <View style={styles.ratingContainer}>
+                          <Text style={styles.rating}>
+                            {item?.rating ? `⭐ ${item?.rating}` : "No rating"}
+                          </Text>
+                        </View>
+                        <TouchableOpacity
+                          onPress={() => handleAddToFavorites(index)}
+                          disabled={isAddedToFavorites}
+                        >
+                          <Text style={styles.favoriteButtonText}>
+                            {isAddedToFavorites ? "Added" : "Add to favorites"}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  ))}
                 <TouchableOpacity
                   onPress={closeModal}
                   style={styles.closeButtonContainer}>
