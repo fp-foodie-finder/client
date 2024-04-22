@@ -9,6 +9,7 @@ import MainProfile from '../screens/MainProfile';
 import UserProfile from '../screens/UserProfile';
 import PreferenceProfile from '../screens/PreferenceProfile';
 import Favourite from '../screens/Favorite';
+import AskUs from '../screens/AskUs';
 
 const Tab = createBottomTabNavigator();
 
@@ -245,6 +246,44 @@ export function TabNavigator() {
                         headerLeft: () => (
                             <AntDesign
                                 onPress={() => navigation.navigate('MainProfile')}
+                                color={"#F24822"}
+                                name="back"
+                                size={35}
+                                style={{
+                                    display: 'flex',
+                                    marginBottom: 10,
+                                    padding: 3,
+                                    marginLeft: 10
+                                }}
+                            />
+                        ),
+                    }}
+                />
+                <Tab.Screen
+                    name='AskUs'
+                    component={AskUs}
+                    options={{
+                        headerTitle: '',
+                        tabBarStyle: { display: 'none' },
+                        tabBarButton: () => null,
+                        tabBarShowLabel: false,
+                        headerRight: () => (
+                            <View>
+                                <Image
+                                    source={require('../assets/FF-2.png')}
+                                    style={{
+                                        height: 35,
+                                        aspectRatio: 0.9,
+                                        marginTop: 10,
+                                        marginRight: 25,
+                                        marginBottom: 20
+                                    }}
+                                />
+                            </View>
+                        ),
+                        headerLeft: () => (
+                            <AntDesign
+                                onPress={() => navigation.navigate('HomeScreen')}
                                 color={"#F24822"}
                                 name="back"
                                 size={35}
