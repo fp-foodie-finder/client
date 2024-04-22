@@ -1,4 +1,4 @@
-import { View, Text, Button, TextInput } from "react-native";
+import { View, Text, Button, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { StyleSheet, Image } from "react-native";
 import { TouchableOpacity } from "react-native";
 import axios from "axios";
@@ -36,120 +36,122 @@ export default function Login() {
   };
   return (
     <>
-      <View style={styles.container}>
-        <Image
-          source={require("../assets/FF-Background-Removed.png")}
-          style={styles.backgroundImage}
-        />
-        <View>
-          <Text
-            style={{
-              textAlign: "center",
-              color: "black",
-              marginBottom: 15,
-              fontFamily: "Helvetica",
-              fontSize: 20,
-            }}>
-            Welcome!
-          </Text>
-        </View>
-        <View style={{ alignItems: "flex-start", width: "70%" }}>
-          <Text
-            style={{
-              alignSelf: "flex-start",
-              color: "black",
-              fontFamily: "Helvetica",
-              fontSize: 15,
-            }}>
-            Email
-          </Text>
-        </View>
-        <TextInput
-          placeholder="JohnDoe@mail.com"
-          style={{
-            height: "5%",
-            width: "70%",
-            textAlign: "center",
-            borderWidth: 0.5,
-            borderRadius: 5,
-            margin: 5,
-            marginBottom: 15,
-          }}
-          name="email"
-          onChangeText={setEmail}
-        />
-        <View style={{ alignItems: "flex-start", width: "70%" }}>
-          <Text
-            style={{
-              alignSelf: "flex-start",
-              color: "black",
-              fontFamily: "Helvetica",
-              fontSize: 15,
-            }}>
-            Password
-          </Text>
-        </View>
-        <TextInput
-          placeholder="******"
-          secureTextEntry={true}
-          style={{
-            height: "5%",
-            width: "70%",
-            borderWidth: 0.5,
-            textAlign: "center",
-            borderRadius: 5,
-            margin: 5,
-            alignItems: "center",
-          }}
-          name="password"
-          onChangeText={setPassword}
-        />
-
-        <View>
-          <TouchableOpacity
-            title="Login"
-            onPress={handleSubmit}
-            style={{
-              backgroundColor: "#F24822",
-              padding: 10,
-              borderRadius: 5,
-              margin: 5,
-              marginTop: 15,
-              marginBottom: 30,
-            }}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : null} keyboardVerticalOffset={Platform.OS === "ios" ? -250 : 0}>
+        <View style={styles.container}>
+          <Image
+            source={require("../assets/FF-Background-Removed.png")}
+            style={styles.backgroundImage}
+          />
+          <View>
             <Text
               style={{
                 textAlign: "center",
-                color: "white",
-                fontWeight: "bold",
+                color: "black",
+                marginBottom: 15,
+                fontFamily: "Helvetica",
+                fontSize: 20,
+              }}>
+              Welcome!
+            </Text>
+          </View>
+          <View style={{ alignItems: "flex-start", width: "70%" }}>
+            <Text
+              style={{
+                alignSelf: "flex-start",
+                color: "black",
+                fontFamily: "Helvetica",
                 fontSize: 15,
               }}>
-              Login
+              Email
             </Text>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <Text
+          </View>
+          <TextInput
+            placeholder="JohnDoe@mail.com"
             style={{
+              height: "5%",
+              width: "70%",
               textAlign: "center",
-              color: "black",
-              fontWeight: "bold",
-              fontSize: 15,
-              marginTop: 50,
-            }}>
-            Don't have an account?
-          </Text>
-        </View>
-        <View>
-          <Button
-            onPress={() => {
-              navigation.navigate("Register");
+              borderWidth: 0.5,
+              borderRadius: 5,
+              margin: 5,
+              marginBottom: 15,
             }}
-            title="Sign up here!"
-            color="#F24822"
+            name="email"
+            onChangeText={setEmail}
           />
+          <View style={{ alignItems: "flex-start", width: "70%" }}>
+            <Text
+              style={{
+                alignSelf: "flex-start",
+                color: "black",
+                fontFamily: "Helvetica",
+                fontSize: 15,
+              }}>
+              Password
+            </Text>
+          </View>
+          <TextInput
+            placeholder="******"
+            secureTextEntry={true}
+            style={{
+              height: "5%",
+              width: "70%",
+              borderWidth: 0.5,
+              textAlign: "center",
+              borderRadius: 5,
+              margin: 5,
+              alignItems: "center",
+            }}
+            name="password"
+            onChangeText={setPassword}
+          />
+
+          <View>
+            <TouchableOpacity
+              title="Login"
+              onPress={handleSubmit}
+              style={{
+                backgroundColor: "#F24822",
+                padding: 10,
+                borderRadius: 5,
+                margin: 5,
+                marginTop: 15,
+                marginBottom: 30,
+              }}>
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "white",
+                  fontWeight: "bold",
+                  fontSize: 15,
+                }}>
+                Login
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View>
+            <Text
+              style={{
+                textAlign: "center",
+                color: "black",
+                fontWeight: "bold",
+                fontSize: 15,
+                marginTop: 50,
+              }}>
+              Don't have an account?
+            </Text>
+          </View>
+          <View>
+            <Button
+              onPress={() => {
+                navigation.navigate("Register");
+              }}
+              title="Sign up here!"
+              color="#F24822"
+            />
+          </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </>
   );
 }
