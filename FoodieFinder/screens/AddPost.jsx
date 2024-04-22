@@ -6,6 +6,25 @@ import { useState } from "react";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
+const CustomTextInput = ({ value, placeholder, onChangeText }) => {
+  const [isTyping, setIsTyping] = useState(false);
+
+  return (
+    <View style={styles.textInputContainer}>
+      {!isTyping && <Text style={styles.placeholder}>{placeholder}</Text>}
+      <TextInput
+        style={styles.textInput}
+        value={value}
+        onChangeText={onChangeText}
+        multiline={true}
+        onFocus={() => setIsTyping(true)}
+        onBlur={() => setIsTyping(false)}
+        textAlignVertical="top"
+      />
+    </View>
+  );
+};
+
 export default function AddPost() {
   const navigation = useNavigation();
   const [imageUrl, setImageUrl] = useState("");
@@ -87,20 +106,12 @@ export default function AddPost() {
             Description
           </Text>
         </View>
-        <TextInput
+        <CustomTextInput
           placeholder="it was a good day"
-          style={{
-            height: "30%",
-            width: "70%",
-            borderWidth: 0.5,
-            textAlign: "center",
-            borderRadius: 5,
-            margin: 5,
-            alignItems: "center",
-          }}
-          name="description"
+          value={description}
           onChangeText={setDescription}
         />
+
 
         <View>
           <TouchableOpacity
@@ -150,13 +161,60 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     marginRight: 10,
   },
-  contentContainer: {
+  heading: {
+    fontSize: 20,
+    marginBottom: 30,
+    fontFamily: "Helvetica",
+    color: "black",
+  },
+  inputContainer: {
+    alignItems: "flex-start",
+    width: "70%",
+    marginBottom: 15,
+  },
+  label: {
+    color: "black",
+    fontFamily: "Helvetica",
+    fontSize: 15,
+  },
+  input: {
+    height: 40,
+    width: "100%",
+    textAlign: "center",
+    borderWidth: 0.5,
+    borderRadius: 5,
+    marginBottom: 15,
+  },
+  textInputContainer: {
+    width: "70%",
+    height: 150,
+    borderWidth: 0.5,
+    borderRadius: 5,
+    margin: 5,
+    padding: 5,
+  },
+  textInput: {
+    flex: 1,
+    textAlignVertical: "top",
+  },
+  placeholder: {
     position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: "center",
-    alignItems: "center",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: -50 }, { translateY: -8 }],
+    color: "gray",
+  },
+  button: {
+    backgroundColor: "#F24822",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginBottom: 15,
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 15,
+    textAlign: "center",
   },
 });
