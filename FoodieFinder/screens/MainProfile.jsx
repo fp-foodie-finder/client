@@ -1,5 +1,5 @@
 import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -8,6 +8,7 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import moment from "moment";
+import { useCallback } from "react";
 
 export default function MainProfile() {
   const { userId } = useContext(AuthContext);
@@ -34,9 +35,12 @@ export default function MainProfile() {
     }
   };
 
-  useEffect(() => {
-    getPostById();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getPostById();
+    }, [])
+    
+  );
 
   return (
     <ScrollView style={{ backgroundColor: "white" }}>
