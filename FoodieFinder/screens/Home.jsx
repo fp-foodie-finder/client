@@ -1,5 +1,6 @@
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import {
   View,
@@ -11,6 +12,7 @@ import {
 } from "react-native";
 import { StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import * as SecureStore from "expo-secure-store";
 
 export default function Home() {
   const navigator = useNavigation();
@@ -18,9 +20,10 @@ export default function Home() {
   const [isDisliked, setIsDisliked] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
-  const [textInputValue, setTextInputValue] = useState("");
   const [textInputKey, setTextInputKey] = useState(0);
   const [isAddedToFavorites, setIsAddedToFavorites] = useState(false);
+  const [datas, setDatas] = useState("");
+  const [textQuery, setTextQuery] = useState("");
 
   const toggleLike = () => {
     setIsLiked(!isLiked);
@@ -29,7 +32,6 @@ export default function Home() {
     setIsDisliked(!isDisliked);
   };
   const openModal = () => {
-    console.log("Submitted");
     setIsModalVisible(true);
   };
 
@@ -45,18 +47,49 @@ export default function Home() {
     setIsInputFocused(false);
   };
 
-  const handleSubmit = () => {
-    console.log("Submitted");
-    openModal();
+  const handleSubmit = async () => {
+    try {
+      const input = {
+        textQuery,
+      };
+      const { data } = await axios({
+        method: "post",
+        url: "https://9e6c-180-252-163-181.ngrok-free.app/maps",
+        data: input,
+        headers: {
+          Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
+        },
+      });
+      setDatas(data);
+      openModal();
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   const resetTextInput = () => {
     setTextInputKey((prevKey) => prevKey + 1);
-    setTextInputValue("");
+    setTextQuery("");
   };
 
-  const handleAddToFavorites = () => {
-    setIsAddedToFavorites(!isAddedToFavorites);
+  const handleAddToFavorites = async (index) => {
+    try {
+      const input = {
+        textQuery,
+      };
+      await axios({
+        method: "post",
+        url: "https://9e6c-180-252-163-181.ngrok-free.app/favorite/" + index,
+        data: input,
+        headers: {
+          Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
+        },
+      });
+      alert("Restaurant has been successfully added to favorites");
+      setIsAddedToFavorites(!isAddedToFavorites);
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   useEffect(() => {
@@ -70,12 +103,6 @@ export default function Home() {
   return (
     <ScrollView style={{ backgroundColor: "white" }}>
       <View style={styles.container}>
-        {/* <View style={styles.circle}>
-                    <ImageBackground
-                        source={require('../assets/FF-Background-Removed.png')}
-                        style={styles.backgroundImage}
-                    />
-                </View> */}
         <View style={styles.formContainer}>
           <View
             style={[
@@ -87,10 +114,10 @@ export default function Home() {
               key={textInputKey}
               placeholder="What are u craving for?"
               style={[styles.input, { flex: isInputFocused ? 1 : 1 }]}
-              value={textInputValue}
-              onChangeText={setTextInputValue}
+              onChangeText={setTextQuery}
               onFocus={handleFocus}
               onBlur={handleBlur}
+              name="textQuery"
             />
             <TouchableOpacity
               style={styles.submitButton}
@@ -117,151 +144,45 @@ export default function Home() {
           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
-                <View style={styles.containerCardModal}>
-                  <View style={styles.headerModal}>
-                    <Image
-                      source={{
-                        uri: `https://places.googleapis.com/v1/places/ChIJfcIV9oDxaS4R6itwY7-PVYM/photos/ATplDJZO0xdoCJ5e2qzMwtjfRtd90oyX-DCDD3BCvTJ8HuCH2uYcrrftXXy6XYCYjaBhtfhVDulBH6AllDAvpIYIBIdIjnPRL8gidikUS14V0auUgVdrpayuFF-10iFZ4gmFnqzDhZYQeSxU6oWLn8H1cWfHhrT4soBmvDaI/media?key=AIzaSyA5TgEC55u00aGOvmvgCS2sDxQwi5JiuYY&maxWidthPx=2880`,
-                      }}
-                      style={styles.avatarModal}
-                    />
-                  </View>
-                  <View style={styles.headerText}>
-                    <Text style={styles.authorModal}>Pizza Hut Ristorante</Text>
-                    <Text style={styles.addressModal}>
-                      Jl. Kemang Raya No.77, RT.4/RW.2, Bangka, Kec. Mampang
-                      Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta
-                      12730, Indonesia
-                    </Text>
-                    <View style={styles.ratingContainer}>
-                      <Text style={styles.rating}>⭐ 4.6</Text>
+                {datas &&
+                  datas?.data?.places?.map((item, index) => (
+                    <View style={styles.containerCardModal} key={index}>
+                      <View style={styles.headerModal}>
+                        {item &&
+                          item.photos &&
+                          item.photos.length > 0 &&
+                          item.photos[0].name && (
+                            <Image
+                              source={{
+                                uri: `https://places.googleapis.com/v1/${item?.photos[0]?.name}/media?key=AIzaSyD8hdZF3fs3AJ35R9Dc3gBk7IJ0ZeoGH9Q&maxWidthPx=360`,
+                              }}
+                              style={styles.avatarModal}
+                            />
+                          )}
+                      </View>
+                      <View style={styles.headerText}>
+                        <Text style={styles.authorModal}>
+                          {item?.displayName?.text}
+                        </Text>
+                        <Text style={styles.addressModal}>
+                          {item?.formattedAddress}
+                        </Text>
+                        <View style={styles.ratingContainer}>
+                          <Text style={styles.rating}>
+                            {item?.rating ? `⭐ ${item?.rating}` : "No rating"}
+                          </Text>
+                        </View>
+                        <TouchableOpacity
+                          onPress={() => handleAddToFavorites(index)}
+                          disabled={isAddedToFavorites}
+                        >
+                          <Text style={styles.favoriteButtonText}>
+                            {isAddedToFavorites ? "Added" : "Add to favorites"}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                    <TouchableOpacity
-                      onPress={() => handleAddToFavorites()}
-                      style={styles.favoriteButton}
-                    >
-                      <Text style={styles.favoriteButtonText}>
-                        {isAddedToFavorites ? "Added" : "Add to favorites"}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View style={styles.containerCardModal}>
-                  <View style={styles.headerModal}>
-                    <Image
-                      source={{
-                        uri: `https://places.googleapis.com/v1/places/ChIJfcIV9oDxaS4R6itwY7-PVYM/photos/ATplDJZO0xdoCJ5e2qzMwtjfRtd90oyX-DCDD3BCvTJ8HuCH2uYcrrftXXy6XYCYjaBhtfhVDulBH6AllDAvpIYIBIdIjnPRL8gidikUS14V0auUgVdrpayuFF-10iFZ4gmFnqzDhZYQeSxU6oWLn8H1cWfHhrT4soBmvDaI/media?key=AIzaSyA5TgEC55u00aGOvmvgCS2sDxQwi5JiuYY&maxWidthPx=2880`,
-                      }}
-                      style={styles.avatarModal}
-                    />
-                  </View>
-                  <View style={styles.headerText}>
-                    <Text style={styles.authorModal}>Pizza Hut Ristorante</Text>
-                    <Text style={styles.addressModal}>
-                      Jl. Kemang Raya No.77, RT.4/RW.2, Bangka, Kec. Mampang
-                      Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta
-                      12730, Indonesia
-                    </Text>
-                    <View style={styles.ratingContainer}>
-                      <Text style={styles.rating}>⭐ 4.6</Text>
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => handleAddToFavorites()}
-                      style={styles.favoriteButton}
-                    >
-                      <Text style={styles.favoriteButtonText}>
-                        {isAddedToFavorites ? "Added" : "Add to favorites"}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View style={styles.containerCardModal}>
-                  <View style={styles.headerModal}>
-                    <Image
-                      source={{
-                        uri: `https://places.googleapis.com/v1/places/ChIJfcIV9oDxaS4R6itwY7-PVYM/photos/ATplDJZO0xdoCJ5e2qzMwtjfRtd90oyX-DCDD3BCvTJ8HuCH2uYcrrftXXy6XYCYjaBhtfhVDulBH6AllDAvpIYIBIdIjnPRL8gidikUS14V0auUgVdrpayuFF-10iFZ4gmFnqzDhZYQeSxU6oWLn8H1cWfHhrT4soBmvDaI/media?key=AIzaSyA5TgEC55u00aGOvmvgCS2sDxQwi5JiuYY&maxWidthPx=2880`,
-                      }}
-                      style={styles.avatarModal}
-                    />
-                  </View>
-                  <View style={styles.headerText}>
-                    <Text style={styles.authorModal}>Pizza Hut Ristorante</Text>
-                    <Text style={styles.addressModal}>
-                      Jl. Kemang Raya No.77, RT.4/RW.2, Bangka, Kec. Mampang
-                      Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta
-                      12730, Indonesia
-                    </Text>
-                    <View style={styles.ratingContainer}>
-                      <Text style={styles.rating}>⭐ 4.6</Text>
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => handleAddToFavorites()}
-                      style={styles.favoriteButton}
-                    >
-                      <Text style={styles.favoriteButtonText}>
-                        {isAddedToFavorites ? "Added" : "Add to favorites"}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View style={styles.containerCardModal}>
-                  <View style={styles.headerModal}>
-                    <Image
-                      source={{
-                        uri: `https://places.googleapis.com/v1/places/ChIJfcIV9oDxaS4R6itwY7-PVYM/photos/ATplDJZO0xdoCJ5e2qzMwtjfRtd90oyX-DCDD3BCvTJ8HuCH2uYcrrftXXy6XYCYjaBhtfhVDulBH6AllDAvpIYIBIdIjnPRL8gidikUS14V0auUgVdrpayuFF-10iFZ4gmFnqzDhZYQeSxU6oWLn8H1cWfHhrT4soBmvDaI/media?key=AIzaSyA5TgEC55u00aGOvmvgCS2sDxQwi5JiuYY&maxWidthPx=2880`,
-                      }}
-                      style={styles.avatarModal}
-                    />
-                  </View>
-                  <View style={styles.headerText}>
-                    <Text style={styles.authorModal}>Pizza Hut Ristorante</Text>
-                    <Text style={styles.addressModal}>
-                      Jl. Kemang Raya No.77, RT.4/RW.2, Bangka, Kec. Mampang
-                      Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta
-                      12730, Indonesia
-                    </Text>
-                    <View style={styles.ratingContainer}>
-                      <Text style={styles.rating}>⭐ 4.6</Text>
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => handleAddToFavorites()}
-                      style={styles.favoriteButton}
-                    >
-                      <Text style={styles.favoriteButtonText}>
-                        {isAddedToFavorites ? "Added" : "Add to favorites"}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View style={styles.containerCardModal}>
-                  <View style={styles.headerModal}>
-                    <Image
-                      source={{
-                        uri: `https://places.googleapis.com/v1/places/ChIJfcIV9oDxaS4R6itwY7-PVYM/photos/ATplDJZO0xdoCJ5e2qzMwtjfRtd90oyX-DCDD3BCvTJ8HuCH2uYcrrftXXy6XYCYjaBhtfhVDulBH6AllDAvpIYIBIdIjnPRL8gidikUS14V0auUgVdrpayuFF-10iFZ4gmFnqzDhZYQeSxU6oWLn8H1cWfHhrT4soBmvDaI/media?key=AIzaSyA5TgEC55u00aGOvmvgCS2sDxQwi5JiuYY&maxWidthPx=2880`,
-                      }}
-                      style={styles.avatarModal}
-                    />
-                  </View>
-                  <View style={styles.headerText}>
-                    <Text style={styles.authorModal}>Pizza Hut Ristorante</Text>
-                    <Text style={styles.addressModal}>
-                      Jl. Kemang Raya No.77, RT.4/RW.2, Bangka, Kec. Mampang
-                      Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta
-                      12730, Indonesia
-                    </Text>
-                    <View style={styles.ratingContainer}>
-                      <Text style={styles.rating}>⭐ 4.6</Text>
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => handleAddToFavorites()}
-                      style={styles.favoriteButton}
-                    >
-                      <Text style={styles.favoriteButtonText}>
-                        {isAddedToFavorites ? "Added" : "Add to favorites"}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
+                  ))}
                 <TouchableOpacity
                   onPress={closeModal}
                   style={styles.closeButtonContainer}
