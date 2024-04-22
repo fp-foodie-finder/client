@@ -104,7 +104,7 @@ export default function Home() {
           <Text style={styles.text}>
             Having a problem with your craving for something?{" "}
           </Text>
-          <TouchableOpacity onPress={() => navigator.navigate("AskUsPage")}>
+          <TouchableOpacity onPress={() => navigator.navigate("AskUs")}>
             <Text style={styles.askUsLink}>Ask us!</Text>
           </TouchableOpacity>
         </View>
