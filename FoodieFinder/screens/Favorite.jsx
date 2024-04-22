@@ -43,7 +43,7 @@ export default function Favourite() {
                 key={index}>
                 <View style={styles.header}>
                   <Image
-                    source={item.imageUrl}
+                    source={{ uri: item.imageUrl }}
                     style={styles.avatar}
                   />
                 </View>
