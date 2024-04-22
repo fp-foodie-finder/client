@@ -82,11 +82,11 @@ export default function Home() {
                             onFocus={handleFocus}
                             onBlur={handleBlur}
                         />
-                        {isInputFocused &&
-                            <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-                                <Text style={styles.submitButtonText}>→</Text>
-                            </TouchableOpacity>
-                        }
+                        {/* {isInputFocused &&
+                        } */}
+                        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+                            <Text style={styles.submitButtonText}>→</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <View style={styles.textContainer}>
@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
         flex: 1,
         left: 20,
         right: 40,
-        width: 350,
+        width: 370,
     },
     input: {
         height: 40,
@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
     },
     text: {
         left: 20,
-        fontSize: 12,
+        fontSize: 13,
         marginLeft: 5
     },
     containerCard: {
