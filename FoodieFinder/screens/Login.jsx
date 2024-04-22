@@ -22,7 +22,7 @@ export default function Login() {
 
       const { data } = await axios({
         method: "post",
-        url: "https://9e6c-180-252-163-181.ngrok-free.app/login",
+        url: "http://localhost:3000/login",
         data: input,
       });
 

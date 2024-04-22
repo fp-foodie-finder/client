@@ -6,7 +6,6 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  
 } from "react-native";
 import { Modal } from "react-native";
 import { Picker } from "@react-native-picker/picker";
@@ -18,7 +17,6 @@ import axios from "axios";
 
 export default function PreferenceProfile() {
   const navigation = useNavigation();
-
   const [selectedValue, setSelectedValue] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState("");
@@ -31,7 +29,7 @@ export default function PreferenceProfile() {
     try {
       const { data } = await axios({
         method: "get",
-        url: "https://9e6c-180-252-163-181.ngrok-free.app/user",
+        url: "http://localhost:3000/user",
         headers: {
           Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
         },

@@ -39,7 +39,7 @@ export default function AddPost() {
 
       await axios({
         method: "post",
-        url: "https://9e6c-180-252-163-181.ngrok-free.app/post",
+        url: "http://localhost:3000/post",
         data: input,
         headers: {
           Authorization: `Bearer ${await SecureStore.getItemAsync("token")}`,
