@@ -12,7 +12,7 @@ export default function Favourite() {
     try {
       const { data } = await axios({
         method: "get",
-        url: "https://9e6c-180-252-163-181.ngrok-free.app/favorite",
+        url: "http://localhost:3000/favorite",
         headers: {
           Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
         },
@@ -59,9 +59,7 @@ export default function Favourite() {
                       onPress={async () => {
                         await axios({
                           method: "delete",
-                          url:
-                            "https://9e6c-180-252-163-181.ngrok-free.app/favorite/" +
-                            item._id,
+                          url: "http://localhost:3000/favorite/" + item._id,
                           headers: {
                             Authorization: `Bearer ${await SecureStore.getItemAsync(
                               "token",

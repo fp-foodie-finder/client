@@ -4,7 +4,7 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import { StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import AuthContext from "../context/auth";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import moment from "moment";
@@ -23,7 +23,7 @@ export default function MainProfile() {
     try {
       const { data } = await axios({
         method: "get",
-        url: `https://9e6c-180-252-163-181.ngrok-free.app/post/${userId}`,
+        url: `http://localhost:3000/post/${userId}`,
         headers: {
           Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
         },
@@ -38,8 +38,7 @@ export default function MainProfile() {
   useFocusEffect(
     useCallback(() => {
       getPostById();
-    }, [])
-    
+    }, []),
   );
 
   return (
@@ -130,7 +129,7 @@ export default function MainProfile() {
                         onPress={async () => {
                           await axios({
                             method: "delete",
-                            url: `https://9e6c-180-252-163-181.ngrok-free.app/post/${item._id}`,
+                            url: `http://localhost:3000/post/${item._id}`,
                             headers: {
                               Authorization:
                                 "Bearer " +

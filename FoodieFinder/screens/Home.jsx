@@ -1,7 +1,7 @@
 import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import {
 import { StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import * as SecureStore from "expo-secure-store";
+import moment from "moment";
 
 export default function Home() {
   const navigator = useNavigation();
@@ -23,10 +24,26 @@ export default function Home() {
   const [textInputKey, setTextInputKey] = useState(0);
   const [isAddedToFavorites, setIsAddedToFavorites] = useState(false);
   const [datas, setDatas] = useState("");
+  const [posts, setPosts] = useState("");
   const [textQuery, setTextQuery] = useState("");
 
-  const toggleLike = () => {
-    setIsLiked(!isLiked);
+  const getTimeAgo = (timestamp) => {
+    return moment(timestamp).fromNow();
+  };
+
+  const toggleLike = async (id) => {
+    try {
+      await axios({
+        method: "put",
+        url: `http://localhost:3000/like/${id}`,
+        headers: {
+          Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
+        },
+      });
+      setIsLiked(!isLiked);
+    } catch (error) {
+      alert(error.message);
+    }
   };
   const toggleDislike = () => {
     setIsDisliked(!isDisliked);
@@ -46,9 +63,7 @@ export default function Home() {
   const handleBlur = () => {
     setIsInputFocused(false);
   };
-  
-  const handleSubmit = () => {
-    openModal();
+
   const handleSubmit = async () => {
     try {
       const input = {
@@ -56,7 +71,7 @@ export default function Home() {
       };
       const { data } = await axios({
         method: "post",
-        url: "https://9e6c-180-252-163-181.ngrok-free.app/maps",
+        url: "http://localhost:3000/maps",
         data: input,
         headers: {
           Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
@@ -81,7 +96,7 @@ export default function Home() {
       };
       await axios({
         method: "post",
-        url: "https://9e6c-180-252-163-181.ngrok-free.app/favorite/" + index,
+        url: "http://localhost:3000/favorite/" + index,
         data: input,
         headers: {
           Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
@@ -94,6 +109,19 @@ export default function Home() {
     }
   };
 
+  const handleGetPosts = async () => {
+    try {
+      const { data } = await axios({
+        method: "get",
+        url: "http://localhost:3000/post",
+        headers: {
+          Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
+        },
+      });
+      setPosts(data);
+    } catch (error) {}
+  };
+
   useEffect(() => {
     const unsubscribe = navigator.addListener("focus", () => {
       resetTextInput();
@@ -101,6 +129,12 @@ export default function Home() {
 
     return unsubscribe;
   }, [navigator]);
+
+  useFocusEffect(
+    useCallback(() => {
+      handleGetPosts();
+    }, []),
+  );
 
   return (
     <ScrollView style={{ backgroundColor: "white" }}>
@@ -143,149 +177,11 @@ export default function Home() {
           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
-                <View style={styles.containerCardModal}>
-                  <View style={styles.headerModal}>
-                    <Image
-                      source={{
-                        uri: `https://places.googleapis.com/v1/places/ChIJfcIV9oDxaS4R6itwY7-PVYM/photos/ATplDJZO0xdoCJ5e2qzMwtjfRtd90oyX-DCDD3BCvTJ8HuCH2uYcrrftXXy6XYCYjaBhtfhVDulBH6AllDAvpIYIBIdIjnPRL8gidikUS14V0auUgVdrpayuFF-10iFZ4gmFnqzDhZYQeSxU6oWLn8H1cWfHhrT4soBmvDaI/media?key=AIzaSyA5TgEC55u00aGOvmvgCS2sDxQwi5JiuYY&maxWidthPx=2880`,
-                      }}
-                      style={styles.avatarModal}
-                    />
-                  </View>
-                  <View style={styles.headerText}>
-                    <Text style={styles.authorModal}>Pizza Hut Ristorante</Text>
-                    <Text style={styles.addressModal}>
-                      Jl. Kemang Raya No.77, RT.4/RW.2, Bangka, Kec. Mampang
-                      Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta
-                      12730, Indonesia
-                    </Text>
-                    <View style={styles.ratingContainer}>
-                      <Text style={styles.rating}>⭐ 4.6</Text>
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => handleAddToFavorites()}
-                      style={styles.favoriteButton}>
-                      <Text style={styles.favoriteButtonText}>
-                        {isAddedToFavorites ? "Added" : "Add to favorites"}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View style={styles.containerCardModal}>
-                  <View style={styles.headerModal}>
-                    <Image
-                      source={{
-                        uri: `https://places.googleapis.com/v1/places/ChIJfcIV9oDxaS4R6itwY7-PVYM/photos/ATplDJZO0xdoCJ5e2qzMwtjfRtd90oyX-DCDD3BCvTJ8HuCH2uYcrrftXXy6XYCYjaBhtfhVDulBH6AllDAvpIYIBIdIjnPRL8gidikUS14V0auUgVdrpayuFF-10iFZ4gmFnqzDhZYQeSxU6oWLn8H1cWfHhrT4soBmvDaI/media?key=AIzaSyA5TgEC55u00aGOvmvgCS2sDxQwi5JiuYY&maxWidthPx=2880`,
-                      }}
-                      style={styles.avatarModal}
-                    />
-                  </View>
-                  <View style={styles.headerText}>
-                    <Text style={styles.authorModal}>Pizza Hut Ristorante</Text>
-                    <Text style={styles.addressModal}>
-                      Jl. Kemang Raya No.77, RT.4/RW.2, Bangka, Kec. Mampang
-                      Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta
-                      12730, Indonesia
-                    </Text>
-                    <View style={styles.ratingContainer}>
-                      <Text style={styles.rating}>⭐ 4.6</Text>
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => handleAddToFavorites()}
-                      style={styles.favoriteButton}>
-                      <Text style={styles.favoriteButtonText}>
-                        {isAddedToFavorites ? "Added" : "Add to favorites"}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View style={styles.containerCardModal}>
-                  <View style={styles.headerModal}>
-                    <Image
-                      source={{
-                        uri: `https://places.googleapis.com/v1/places/ChIJfcIV9oDxaS4R6itwY7-PVYM/photos/ATplDJZO0xdoCJ5e2qzMwtjfRtd90oyX-DCDD3BCvTJ8HuCH2uYcrrftXXy6XYCYjaBhtfhVDulBH6AllDAvpIYIBIdIjnPRL8gidikUS14V0auUgVdrpayuFF-10iFZ4gmFnqzDhZYQeSxU6oWLn8H1cWfHhrT4soBmvDaI/media?key=AIzaSyA5TgEC55u00aGOvmvgCS2sDxQwi5JiuYY&maxWidthPx=2880`,
-                      }}
-                      style={styles.avatarModal}
-                    />
-                  </View>
-                  <View style={styles.headerText}>
-                    <Text style={styles.authorModal}>Pizza Hut Ristorante</Text>
-                    <Text style={styles.addressModal}>
-                      Jl. Kemang Raya No.77, RT.4/RW.2, Bangka, Kec. Mampang
-                      Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta
-                      12730, Indonesia
-                    </Text>
-                    <View style={styles.ratingContainer}>
-                      <Text style={styles.rating}>⭐ 4.6</Text>
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => handleAddToFavorites()}
-                      style={styles.favoriteButton}>
-                      <Text style={styles.favoriteButtonText}>
-                        {isAddedToFavorites ? "Added" : "Add to favorites"}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View style={styles.containerCardModal}>
-                  <View style={styles.headerModal}>
-                    <Image
-                      source={{
-                        uri: `https://places.googleapis.com/v1/places/ChIJfcIV9oDxaS4R6itwY7-PVYM/photos/ATplDJZO0xdoCJ5e2qzMwtjfRtd90oyX-DCDD3BCvTJ8HuCH2uYcrrftXXy6XYCYjaBhtfhVDulBH6AllDAvpIYIBIdIjnPRL8gidikUS14V0auUgVdrpayuFF-10iFZ4gmFnqzDhZYQeSxU6oWLn8H1cWfHhrT4soBmvDaI/media?key=AIzaSyA5TgEC55u00aGOvmvgCS2sDxQwi5JiuYY&maxWidthPx=2880`,
-                      }}
-                      style={styles.avatarModal}
-                    />
-                  </View>
-                  <View style={styles.headerText}>
-                    <Text style={styles.authorModal}>Pizza Hut Ristorante</Text>
-                    <Text style={styles.addressModal}>
-                      Jl. Kemang Raya No.77, RT.4/RW.2, Bangka, Kec. Mampang
-                      Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta
-                      12730, Indonesia
-                    </Text>
-                    <View style={styles.ratingContainer}>
-                      <Text style={styles.rating}>⭐ 4.6</Text>
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => handleAddToFavorites()}
-                      style={styles.favoriteButton}>
-                      <Text style={styles.favoriteButtonText}>
-                        {isAddedToFavorites ? "Added" : "Add to favorites"}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View style={styles.containerCardModal}>
-                  <View style={styles.headerModal}>
-                    <Image
-                      source={{
-                        uri: `https://places.googleapis.com/v1/places/ChIJfcIV9oDxaS4R6itwY7-PVYM/photos/ATplDJZO0xdoCJ5e2qzMwtjfRtd90oyX-DCDD3BCvTJ8HuCH2uYcrrftXXy6XYCYjaBhtfhVDulBH6AllDAvpIYIBIdIjnPRL8gidikUS14V0auUgVdrpayuFF-10iFZ4gmFnqzDhZYQeSxU6oWLn8H1cWfHhrT4soBmvDaI/media?key=AIzaSyA5TgEC55u00aGOvmvgCS2sDxQwi5JiuYY&maxWidthPx=2880`,
-                      }}
-                      style={styles.avatarModal}
-                    />
-                  </View>
-                  <View style={styles.headerText}>
-                    <Text style={styles.authorModal}>Pizza Hut Ristorante</Text>
-                    <Text style={styles.addressModal}>
-                      Jl. Kemang Raya No.77, RT.4/RW.2, Bangka, Kec. Mampang
-                      Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta
-                      12730, Indonesia
-                    </Text>
-                    <View style={styles.ratingContainer}>
-                      <Text style={styles.rating}>⭐ 4.6</Text>
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => handleAddToFavorites()}
-                      style={styles.favoriteButton}>
-                      <Text style={styles.favoriteButtonText}>
-                        {isAddedToFavorites ? "Added" : "Add to favorites"}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
                 {datas &&
                   datas?.data?.places?.map((item, index) => (
-                    <View style={styles.containerCardModal} key={index}>
+                    <View
+                      style={styles.containerCardModal}
+                      key={index}>
                       <View style={styles.headerModal}>
                         {item &&
                           item.photos &&
@@ -313,8 +209,7 @@ export default function Home() {
                         </View>
                         <TouchableOpacity
                           onPress={() => handleAddToFavorites(index)}
-                          disabled={isAddedToFavorites}
-                        >
+                          disabled={isAddedToFavorites}>
                           <Text style={styles.favoriteButtonText}>
                             {isAddedToFavorites ? "Added" : "Add to favorites"}
                           </Text>
@@ -331,168 +226,60 @@ export default function Home() {
             </View>
           </ScrollView>
         </Modal>
-        <View>
-          <View style={styles.containerCard}>
-            <TouchableOpacity
-              style={styles.header}
-              onPress={() => navigator.navigate("UserProfile")}>
-              <Image
-                source={{
-                  uri: `https://plus.unsplash.com/premium_photo-1663858367001-89e5c92d1e0e?q=80&w=3715&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`,
-                }}
-                style={styles.avatar}
-              />
-              <View>
-                <Text style={styles.author}>Ganjar</Text>
-                <Text style={styles.time}>2 hours ago</Text>
-              </View>
-            </TouchableOpacity>
-            <Text style={styles.content}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio,
-              nam, fugit vel delectus libero, unde officiis enim incidunt
-              cupiditate dolore impedit natus nobis minus rerum ratione magnam
-              quam sunt. Dolorum.
-            </Text>
-            <Image
-              source={{
-                uri: `https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=3570&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`,
-              }}
-              style={styles.image}
-            />
-            <TouchableOpacity>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <AntDesign
-                  onPress={toggleLike}
-                  name={isLiked ? "like1" : "like2"}
-                  size={25}
-                  style={{
-                    display: "flex",
-                    padding: 5,
+        {posts &&
+          posts.map((item, index) => (
+            <View key={index}>
+              <View style={styles.containerCard}>
+                <TouchableOpacity
+                  style={styles.header}
+                  onPress={() => navigator.navigate("UserProfile")}>
+                  <Image
+                    source={{
+                      uri: `https://source.unsplash.com/random/300x200?sig=${index}`,
+                    }}
+                    style={styles.avatar}
+                  />
+                  <View>
+                    <Text style={styles.author}>{item.author.username}</Text>
+                    <Text style={styles.time}>
+                      {getTimeAgo(item.createdAt)}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <Text style={styles.content}>{item.description}</Text>
+                <Image
+                  source={{
+                    uri: `${item.imageUrl}`,
                   }}
+                  style={styles.image}
                 />
-                <Text style={{ marginRight: 10 }}>1</Text>
-                <AntDesign
-                  onPress={toggleDislike}
-                  name={isDisliked ? "dislike1" : "dislike2"}
-                  size={25}
-                  style={{
-                    display: "flex",
-                    padding: 5,
-                  }}
-                />
-                <Text>1</Text>
+                <TouchableOpacity>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <AntDesign
+                      onPress={() => toggleLike(item._id)}
+                      name={isLiked ? "like1" : "like2"}
+                      size={25}
+                      style={{
+                        display: "flex",
+                        padding: 5,
+                      }}
+                    />
+                    <Text style={{ marginRight: 10 }}>{item.like.length}</Text>
+                    <AntDesign
+                      onPress={toggleDislike}
+                      name={isDisliked ? "dislike1" : "dislike2"}
+                      size={25}
+                      style={{
+                        display: "flex",
+                        padding: 5,
+                      }}
+                    />
+                    <Text>{item.dislike.length}</Text>
+                  </View>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View>
-          <View style={styles.containerCard}>
-            <TouchableOpacity
-              style={styles.header}
-              onPress={() => navigator.navigate("UserProfile")}>
-              <Image
-                source={{
-                  uri: `https://plus.unsplash.com/premium_photo-1663858367001-89e5c92d1e0e?q=80&w=3715&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`,
-                }}
-                style={styles.avatar}
-              />
-              <View>
-                <Text style={styles.author}>Ganjar</Text>
-                <Text style={styles.time}>2 hours ago</Text>
-              </View>
-            </TouchableOpacity>
-            <Text style={styles.content}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio,
-              nam, fugit vel delectus libero, unde officiis enim incidunt
-              cupiditate dolore impedit natus nobis minus rerum ratione magnam
-              quam sunt. Dolorum.
-            </Text>
-            <Image
-              source={{
-                uri: `https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=3570&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`,
-              }}
-              style={styles.image}
-            />
-            <TouchableOpacity>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <AntDesign
-                  onPress={toggleLike}
-                  name={isLiked ? "like1" : "like2"}
-                  size={25}
-                  style={{
-                    display: "flex",
-                    padding: 5,
-                  }}
-                />
-                <Text style={{ marginRight: 10 }}>1</Text>
-                <AntDesign
-                  onPress={toggleDislike}
-                  name={isDisliked ? "dislike1" : "dislike2"}
-                  size={25}
-                  style={{
-                    display: "flex",
-                    padding: 5,
-                  }}
-                />
-                <Text>1</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View>
-          <View style={styles.containerCard}>
-            <TouchableOpacity
-              style={styles.header}
-              onPress={() => navigator.navigate("UserProfile")}>
-              <Image
-                source={{
-                  uri: `https://plus.unsplash.com/premium_photo-1663858367001-89e5c92d1e0e?q=80&w=3715&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`,
-                }}
-                style={styles.avatar}
-              />
-              <View>
-                <Text style={styles.author}>Ganjar</Text>
-                <Text style={styles.time}>2 hours ago</Text>
-              </View>
-            </TouchableOpacity>
-            <Text style={styles.content}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio,
-              nam, fugit vel delectus libero, unde officiis enim incidunt
-              cupiditate dolore impedit natus nobis minus rerum ratione magnam
-              quam sunt. Dolorum.
-            </Text>
-            <Image
-              source={{
-                uri: `https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=3570&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`,
-              }}
-              style={styles.image}
-            />
-            <TouchableOpacity>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <AntDesign
-                  onPress={toggleLike}
-                  name={isLiked ? "like1" : "like2"}
-                  size={25}
-                  style={{
-                    display: "flex",
-                    padding: 5,
-                  }}
-                />
-                <Text style={{ marginRight: 10 }}>1</Text>
-                <AntDesign
-                  onPress={toggleDislike}
-                  name={isDisliked ? "dislike1" : "dislike2"}
-                  size={25}
-                  style={{
-                    display: "flex",
-                    padding: 5,
-                  }}
-                />
-                <Text>1</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
+            </View>
+          ))}
       </View>
     </ScrollView>
   );
