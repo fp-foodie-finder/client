@@ -15,7 +15,6 @@ export default function Home() {
     const [textInputValue, setTextInputValue] = useState('');
     const [textInputKey, setTextInputKey] = useState(0);
     const [isAddedToFavorites, setIsAddedToFavorites] = useState(false);
-    const [prevScrollPosition, setPrevScrollPosition] = useState(0);
 
 
 
@@ -26,22 +25,24 @@ export default function Home() {
         setIsDisliked(!isDisliked);
     };
     const openModal = () => {
+        console.log('Submitted');
         setIsModalVisible(true);
     };
 
     const closeModal = () => {
         setIsModalVisible(false);
     };
-
+    
     const handleFocus = () => {
         setIsInputFocused(true);
     };
-
+    
     const handleBlur = () => {
         setIsInputFocused(false);
     };
-
+    
     const handleSubmit = () => {
+        console.log('Submitted');
         openModal();
     };
 
@@ -82,6 +83,11 @@ export default function Home() {
                             onFocus={handleFocus}
                             onBlur={handleBlur}
                         />
+                        {isInputFocused &&
+                            <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+                                <Text style={styles.submitButtonText} onPress={handleSubmit}>→</Text>
+                            </TouchableOpacity>
+                        }
                         {/* {isInputFocused &&
                         } */}
                         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
@@ -104,15 +110,7 @@ export default function Home() {
                     onRequestClose={closeModal}
                 >
                     <ScrollView
-                        // contentContainerStyle={{ flexGrow: 1 }}
-                        // scrollEventThrottle={16}
-                        // onScroll={(event) => {
-                        //     const offsetY = event.nativeEvent.contentOffset.y;
-                        //     if (offsetY < prevScrollPosition) {
-                        //         closeModal();
-                        //     }
-                        //     setPrevScrollPosition(offsetY);
-                        // }}
+                        contentContainerStyle={{ flexGrow: 1 }}
                     >
                         <View style={styles.modalContainer}>
                             <View style={styles.modalContent}>
@@ -380,6 +378,7 @@ const styles = StyleSheet.create({
     },
     text: {
         left: 20,
+        fontSize: 16,
         fontSize: 13,
         marginLeft: 5
     },
@@ -456,16 +455,16 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginTop: 10,
         height: 40,
-        width: 40,
+        width: 80,
     },
     submitButtonText: {
-        color: 'white',
+        color: 'black',
         fontWeight: 'bold',
         textAlign: 'center',
     },
     askUsLink: {
         color: '#F24822',
-        fontSize: 12,
+        fontSize: 16,
         fontWeight: 'bold',
         marginLeft: 20,
     },
