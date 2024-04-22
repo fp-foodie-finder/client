@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         flex: 1,
-        left: 20,
+        left: 15,
         right: 40,
         width: 370,
     },
