@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  
 } from "react-native";
 import { Modal } from "react-native";
 import { Picker } from "@react-native-picker/picker";
@@ -30,7 +31,6 @@ export default function PreferenceProfile() {
     try {
       const { data } = await axios({
         method: "get",
-        // url: process.env.BASE_URL + `/user`,
         url: "https://9e6c-180-252-163-181.ngrok-free.app/user",
         headers: {
           Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
@@ -61,7 +61,7 @@ export default function PreferenceProfile() {
                 style={styles.avatarHeader}
               />
               <View>
-                <Text style={styles.username}>{item.fullname}</Text>
+                <Text style={styles.username}>{item.username}</Text>
               </View>
             </View>
             <View>

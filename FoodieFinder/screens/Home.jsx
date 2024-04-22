@@ -88,6 +88,11 @@ export default function Home() {
                                 <Text style={styles.submitButtonText} onPress={handleSubmit}>→</Text>
                             </TouchableOpacity>
                         }
+                        {/* {isInputFocused &&
+                        } */}
+                        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+                            <Text style={styles.submitButtonText}>→</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <View style={styles.textContainer}>
@@ -374,6 +379,8 @@ const styles = StyleSheet.create({
     text: {
         left: 20,
         fontSize: 16,
+        fontSize: 13,
+        marginLeft: 5
     },
     containerCard: {
         flex: 1,
