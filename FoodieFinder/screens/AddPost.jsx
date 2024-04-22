@@ -20,7 +20,6 @@ export default function AddPost() {
 
       await axios({
         method: "post",
-        // url: process.env.BASE_URL + "/register",
         url: "https://9e6c-180-252-163-181.ngrok-free.app/post",
         data: input,
         headers: {

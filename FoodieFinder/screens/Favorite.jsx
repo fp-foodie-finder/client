@@ -1,8 +1,6 @@
-import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { View, Text, TextInput, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import { StyleSheet } from "react-native";
-import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
@@ -14,7 +12,6 @@ export default function Favourite() {
     try {
       const { data } = await axios({
         method: "get",
-        // url: process.env.BASE_URL + `/user`,
         url: "https://9e6c-180-252-163-181.ngrok-free.app/favorite",
         headers: {
           Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
@@ -41,9 +38,14 @@ export default function Favourite() {
           </View>
           {favorite &&
             favorite.map((item, index) => (
-              <View style={styles.containerCard} key={index}>
+              <View
+                style={styles.containerCard}
+                key={index}>
                 <View style={styles.header}>
-                  <Image source={item.imageUrl} style={styles.avatar} />
+                  <Image
+                    source={item.imageUrl}
+                    style={styles.avatar}
+                  />
                 </View>
                 <View style={styles.headerText}>
                   <Text style={styles.author}>{item.name}</Text>
@@ -54,20 +56,22 @@ export default function Favourite() {
                   <TouchableOpacity>
                     <Text
                       style={styles.delete}
-                      onPress={async() => {
+                      onPress={async () => {
                         await axios({
                           method: "delete",
-                          // url: process.env.BASE_URL + "/register",
-                          url: "https://9e6c-180-252-163-181.ngrok-free.app/favorite/" + item._id,
+                          url:
+                            "https://9e6c-180-252-163-181.ngrok-free.app/favorite/" +
+                            item._id,
                           headers: {
-                            Authorization: `Bearer ${await SecureStore.getItemAsync("token")}`,
+                            Authorization: `Bearer ${await SecureStore.getItemAsync(
+                              "token",
+                            )}`,
                           },
                         });
                         alert("Favorite has beeen successfully deleted");
 
                         getAllData();
-                      }}
-                    >
+                      }}>
                       Delete
                     </Text>
                   </TouchableOpacity>
@@ -219,12 +223,6 @@ const styles = StyleSheet.create({
     marginTop: 25,
     alignItems: "flex-end",
   },
-  // loveButton: {
-  //     flex: 1,
-  //     marginTop: 25,
-  //     marginLeft: 20,
-  //     marginRight: 15
-  // },
   fav: {
     color: "#555",
     marginLeft: 5,
