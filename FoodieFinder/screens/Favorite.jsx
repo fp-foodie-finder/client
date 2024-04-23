@@ -1,9 +1,10 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Favourite() {
   const [favorite, setFavorite] = useState("");
@@ -23,9 +24,11 @@ export default function Favourite() {
     }
   };
 
-  useEffect(() => {
-    getAllData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getAllData();
+    }, []),
+  );
 
   return (
     <>
@@ -51,7 +54,9 @@ export default function Favourite() {
                   <Text style={styles.author}>{item.name}</Text>
                   <Text style={styles.address}>{item.address}</Text>
                   <View style={styles.ratingContainer}>
-                    <Text style={styles.rating}>⭐ {item.rating}</Text>
+                    <Text style={styles.rating}>
+                      {item?.rating ? `⭐ ${item?.rating}` : "No rating"}
+                    </Text>
                   </View>
                   <TouchableOpacity>
                     <Text

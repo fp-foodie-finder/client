@@ -95,7 +95,12 @@ export default function MainProfile() {
                       style={styles.avatar}
                     />
                     <View style={styles.headerText}>
-                      <Text style={styles.author}>{item.description}</Text>
+                      <Text style={styles.author}>
+                        {" "}
+                        {item.description.length > 15
+                          ? `${item.description.slice(0, 15)}...`
+                          : item.description}
+                      </Text>
                       <Text style={styles.time}>
                         {getTimeAgo(item.createdAt)}
                       </Text>
