@@ -24,13 +24,12 @@ export default function AskUs() {
       };
       const { data } = await axios({
         method: "post",
-        url: "https://9e6c-180-252-163-181.ngrok-free.app/ai",
+        url: "http://localhost:3000/ai",
         data: inputData,
         headers: {
           Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
         },
       });
-      //   setDatas(data);
       const newChats = [
         ...chats,
         { message: input, isSelf: true },
@@ -52,8 +51,7 @@ export default function AskUs() {
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : null}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 70 : 80}
-      >
+        keyboardVerticalOffset={Platform.OS === "ios" ? 70 : 80}>
         <View style={styles.container}>
           <View style={styles.chatContainer}>
             <ScrollView>
@@ -65,8 +63,7 @@ export default function AskUs() {
                     chat.isSelf
                       ? styles.selfChatBubble
                       : styles.otherChatBubble,
-                  ]}
-                >
+                  ]}>
                   <Text style={styles.chatText}>{chat.message}</Text>
                 </View>
               ))}
@@ -81,8 +78,7 @@ export default function AskUs() {
               />
               <TouchableOpacity
                 onPress={handleSubmit}
-                style={styles.sendButton}
-              >
+                style={styles.sendButton}>
                 <Text style={styles.sendButtonText}>Send</Text>
               </TouchableOpacity>
             </View>

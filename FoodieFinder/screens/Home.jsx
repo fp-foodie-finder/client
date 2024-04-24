@@ -1,4 +1,4 @@
-import { AntDesign } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { useCallback, useEffect, useState, useContext } from "react";
@@ -9,12 +9,14 @@ import {
   Image,
   TouchableOpacity,
   Modal,
+  Linking,
 } from "react-native";
 import { StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import * as SecureStore from "expo-secure-store";
 import moment from "moment";
 import AuthContext from "../context/auth";
+import { AntDesign } from "@expo/vector-icons";
 
 export default function Home() {
   const navigator = useNavigation();
@@ -87,6 +89,7 @@ export default function Home() {
       alert(error.message);
     }
   };
+
   const openModal = () => {
     setIsModalVisible(true);
   };
@@ -247,18 +250,32 @@ export default function Home() {
                             {item?.rating ? `⭐ ${item?.rating}` : "No rating"}
                           </Text>
                         </View>
+                        <TouchableOpacity>
+                          <MaterialCommunityIcons
+                            name="google-maps"
+                            size={25}
+                            style={styles.gmaps}
+                            onPress={() => {
+                              Linking.openURL(item.googleMapsUri);
+                            }}
+                          />
+                        </TouchableOpacity>
                         <TouchableOpacity
                           onPress={() => handleAddToFavorites(index)}
                           disabled={isAddedToFavorites.includes(
                             item?.displayName?.text,
                           )}>
-                          <Text style={styles.favoriteButtonText}>
-                            {isAddedToFavorites.includes(
-                              item?.displayName?.text,
-                            )
-                              ? "Added"
-                              : "Add to favorites"}
-                          </Text>
+                          <AntDesign
+                            style={styles.favoriteButton}
+                            size={25}
+                            name={
+                              isAddedToFavorites.includes(
+                                item?.displayName?.text,
+                              )
+                                ? "heart"
+                                : "hearto"
+                            }
+                          />
                         </TouchableOpacity>
                       </View>
                     </View>
@@ -278,10 +295,12 @@ export default function Home() {
               <View style={styles.containerCard}>
                 <TouchableOpacity
                   style={styles.header}
-                  onPress={() => navigator.navigate("UserProfile")}>
+                  onPress={() =>
+                    navigator.navigate("UserProfile", { id: item.authorId })
+                  }>
                   <Image
                     source={{
-                      uri: `https://source.unsplash.com/random/300x200?sig=${index}`,
+                      uri: `https://source.unsplash.com/random/300x200?sig=${item.authorId}`,
                     }}
                     style={styles.avatar}
                   />
@@ -586,7 +605,6 @@ const styles = StyleSheet.create({
   addressModal: {
     fontSize: 14,
     color: "#555",
-    marginBottom: 5,
   },
   authorModal: {
     fontSize: 16,
@@ -600,14 +618,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignSelf: "flex-start",
     marginTop: 5,
-  },
-  favoriteButtonText: {
-    position: "absolute",
-    bottom: 5,
-    right: 10,
-    color: "red",
-    fontWeight: "bold",
-    fontSize: 13,
   },
   container: {
     flex: 1,
@@ -856,12 +866,17 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     marginTop: 5,
   },
-  favoriteButtonText: {
+  favoriteButton: {
     position: "absolute",
     bottom: 5,
     right: 10,
     color: "red",
-    fontWeight: "bold",
-    fontSize: 13,
+  },
+  gmaps: {
+    color: "#F24822",
+    bottom: 5,
+    right: 50,
+    color: "red",
+    position: "absolute",
   },
 });
