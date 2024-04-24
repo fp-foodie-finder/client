@@ -22,7 +22,7 @@ export default function Preference() {
       };
       await axios({
         method: "patch",
-        url: `http://localhost:3000/user/${id}`,
+        url: `https://foodie-finder.naufalsoerya.online/user/${id}`,
         data: input,
         headers: {
           Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),

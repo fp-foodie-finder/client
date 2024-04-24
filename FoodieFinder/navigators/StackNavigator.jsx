@@ -19,7 +19,7 @@ export default function StackNavigator() {
     try {
       const { data } = await axios({
         method: "get",
-        url: "http://localhost:3000/user",
+        url: "https://foodie-finder.naufalsoerya.online/user",
         headers: {
           Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
         },

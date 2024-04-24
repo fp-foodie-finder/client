@@ -23,7 +23,7 @@ export default function UserProfile() {
     try {
       await axios({
         method: "patch",
-        url: `http://localhost:3000/like/${id}`,
+        url: `https://foodie-finder.naufalsoerya.online/like/${id}`,
         headers: {
           Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
         },
@@ -37,7 +37,7 @@ export default function UserProfile() {
     try {
       await axios({
         method: "patch",
-        url: `http://localhost:3000/unlike/${id}`,
+        url: `https://foodie-finder.naufalsoerya.online/unlike/${id}`,
         headers: {
           Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
         },
@@ -51,7 +51,7 @@ export default function UserProfile() {
     try {
       await axios({
         method: "patch",
-        url: `http://localhost:3000/dislike/${id}`,
+        url: `https://foodie-finder.naufalsoerya.online/dislike/${id}`,
         headers: {
           Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
         },
@@ -65,7 +65,7 @@ export default function UserProfile() {
     try {
       await axios({
         method: "patch",
-        url: `http://localhost:3000/undislike/${id}`,
+        url: `https://foodie-finder.naufalsoerya.online/undislike/${id}`,
         headers: {
           Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
         },
@@ -80,7 +80,7 @@ export default function UserProfile() {
     try {
       const { data } = await axios({
         method: "get",
-        url: `http://localhost:3000/post/${id}`,
+        url: `https://foodie-finder.naufalsoerya.online/post/${id}`,
         headers: {
           Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
         },
@@ -121,8 +121,10 @@ export default function UserProfile() {
             </View>
             {item.posts &&
               item.posts.map((item, index) => (
-                <View style={styles.containerCard}>
-                  <View key={index}>
+                <View
+                  style={styles.containerCard}
+                  key={index}>
+                  <View>
                     <Image
                       source={{
                         uri: `https://images.unsplash.com/photo-1474447976065-67d23accb1e3?q=80&w=3085&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`,
