@@ -13,7 +13,7 @@ export default function Favourite() {
     try {
       const { data } = await axios({
         method: "get",
-        url: "http://localhost:3000/favorite",
+        url: "https://foodie-finder.naufalsoerya.online/favorite",
         headers: {
           Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
         },
@@ -64,7 +64,9 @@ export default function Favourite() {
                       onPress={async () => {
                         await axios({
                           method: "delete",
-                          url: "http://localhost:3000/favorite/" + item._id,
+                          url:
+                            "https://foodie-finder.naufalsoerya.online/favorite/" +
+                            item._id,
                           headers: {
                             Authorization: `Bearer ${await SecureStore.getItemAsync(
                               "token",

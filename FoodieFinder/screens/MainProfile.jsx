@@ -23,7 +23,7 @@ export default function MainProfile() {
     try {
       const { data } = await axios({
         method: "get",
-        url: `http://localhost:3000/post/${userId}`,
+        url: `https://foodie-finder.naufalsoerya.online/post/${userId}`,
         headers: {
           Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
         },
@@ -134,7 +134,7 @@ export default function MainProfile() {
                         onPress={async () => {
                           await axios({
                             method: "delete",
-                            url: `http://localhost:3000/post/${item._id}`,
+                            url: `https://foodie-finder.naufalsoerya.online/post/${item._id}`,
                             headers: {
                               Authorization:
                                 "Bearer " +

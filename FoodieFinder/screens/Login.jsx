@@ -29,7 +29,7 @@ export default function Login() {
 
       const { data } = await axios({
         method: "post",
-        url: "http://localhost:3000/login",
+        url: "https://foodie-finder.naufalsoerya.online/login",
         data: input,
       });
 

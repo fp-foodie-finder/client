@@ -39,7 +39,7 @@ export default function AddPost() {
 
       await axios({
         method: "post",
-        url: "http://localhost:3000/post",
+        url: "https://foodie-finder.naufalsoerya.online/post",
         data: input,
         headers: {
           Authorization: `Bearer ${await SecureStore.getItemAsync("token")}`,
