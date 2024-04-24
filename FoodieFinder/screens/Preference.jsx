@@ -1,20 +1,40 @@
 import { View, Text, TextInput, Button } from "react-native";
 import { StyleSheet, Image } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Modal } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import * as SecureStore from "expo-secure-store";
 
 export default function Preference() {
   const [selectedValue, setSelectedValue] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState("");
+  const [preference, setPreference] = useState("");
   const navigation = useNavigation();
 
-  const handleSubmit = () => {
+  const handleSubmit = async (id) => {
+    try {
+      const input = {
+        preference,
+      };
+      await axios({
+        method: "patch",
+        url: `http://localhost:3000/user/${id}`,
+        data: input,
+        headers: {
+          Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
+        },
+      });
+      alert("Your preference has been successfully updated");
+    } catch (error) {
+      alert(error.message);
+    }
     navigation.navigate("Home");
   };
+
   const showModal = () => setModalVisible(true);
   const hideModal = () => setModalVisible(false);
 
@@ -65,7 +85,7 @@ export default function Preference() {
             <Picker
               selectedValue={selectedValue}
               onValueChange={(itemValue, itemIndex) => {
-                setSelectedValue(itemValue);
+                setPreference(itemValue);
                 setSelectedLabel(
                   itemIndex === 0
                     ? ""
@@ -77,10 +97,13 @@ export default function Preference() {
                     ? "Chinese Food"
                     : itemIndex === 4
                     ? "Indonesian Food"
+                    : itemIndex === 5
+                    ? "Japanese Food"
                     : "",
                 );
                 hideModal();
               }}
+              name="preference"
               style={styles.picker}>
               <Picker.Item
                 label="Select an option"
@@ -101,6 +124,10 @@ export default function Preference() {
               <Picker.Item
                 label="Indonesian Food"
                 value="Indonesian Food"
+              />
+              <Picker.Item
+                label="Japanese Food"
+                value="Japanese Food"
               />
             </Picker>
           </View>

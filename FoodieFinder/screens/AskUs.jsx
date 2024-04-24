@@ -19,86 +19,76 @@ export default function AskUs() {
     const [isLoading, setIsLoading] = useState(false);
     const [textInputKey, setTextInputKey] = useState(0);
 
-    const handleSubmit = async () => {
-        try {
-            setIsLoading(true)
-            const inputData = {
-                input,
-            };
-            const { data } = await axios({
-                method: "post",
-                url: "https://foodie-finder.naufalsoerya.online/ai",
-                data: inputData,
-                headers: {
-                    Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
-                },
-            });
-            //   setDatas(data);
-            const newChats = [
-                ...chats,
-                { message: input, isSelf: true },
-                { message: data.result, isSelf: false },
-            ];
-            setChats(newChats);
-            resetTextInput();
-        } catch (error) {
-            alert(error.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+  const handleSubmit = async () => {
+    try {
+      const inputData = {
+        input,
+      };
+      const { data } = await axios({
+        method: "post",
+        url: "http://localhost:3000/ai",
+        data: inputData,
+        headers: {
+          Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
+        },
+      });
+      const newChats = [
+        ...chats,
+        { message: input, isSelf: true },
+        { message: data.result, isSelf: false },
+      ];
+      setChats(newChats);
+      resetTextInput();
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
-    const resetTextInput = () => {
-        setTextInputKey((prevKey) => prevKey + 1);
-        setInput("");
-    };
-    return (
-        <>
-            <KeyboardAvoidingView
-                style={{ flex: 1 }}
-                behavior={Platform.OS === "ios" ? "padding" : null}
-                keyboardVerticalOffset={Platform.OS === "ios" ? 70 : 80}
-            >
-                <View style={styles.container}>
-                    <View style={styles.chatContainer}>
-                        {isLoading &&
-                            <ActivityIndicator size="large" color="#0000ff" style={styles.loading} />
-                        }
-                        <ScrollView>
-                            {chats.map((chat, index) => (
-                                <View
-                                    key={index}
-                                    style={[
-                                        styles.chatBubble,
-                                        chat.isSelf
-                                            ? styles.selfChatBubble
-                                            : styles.otherChatBubble,
-                                    ]}
-                                >
-                                    <Text style={styles.chatText}>{chat.message}</Text>
-                                </View>
-                            ))}
-                        </ScrollView>
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                key={textInputKey}
-                                style={styles.input}
-                                onChangeText={setInput}
-                                placeholder="Type a message..."
-                                name="input"
-                            />
-                            <TouchableOpacity
-                                onPress={handleSubmit}
-                                style={styles.sendButton}
-                            >
-                                <Text style={styles.sendButtonText}>Send</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+  const resetTextInput = () => {
+    setTextInputKey((prevKey) => prevKey + 1);
+    setInput("");
+  };
+  return (
+    <>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 70 : 80}>
+        <View style={styles.container}>
+          <View style={styles.chatContainer}>
+            <ScrollView>
+              {chats.map((chat, index) => (
+                <View
+                  key={index}
+                  style={[
+                    styles.chatBubble,
+                    chat.isSelf
+                      ? styles.selfChatBubble
+                      : styles.otherChatBubble,
+                  ]}>
+                  <Text style={styles.chatText}>{chat.message}</Text>
                 </View>
-            </KeyboardAvoidingView>
-        </>
-    );
+              ))}
+            </ScrollView>
+            <View style={styles.inputContainer}>
+              <TextInput
+                key={textInputKey}
+                style={styles.input}
+                onChangeText={setInput}
+                placeholder="Type a message..."
+                name="input"
+              />
+              <TouchableOpacity
+                onPress={handleSubmit}
+                style={styles.sendButton}>
+                <Text style={styles.sendButtonText}>Send</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+    </>
+  );
 }
 
 const styles = StyleSheet.create({

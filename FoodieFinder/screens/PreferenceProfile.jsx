@@ -21,6 +21,7 @@ export default function PreferenceProfile() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState("");
   const [dataUser, setDataUser] = useState("");
+  const [preference, setPreference] = useState("");
   const { setIsSignedIn } = useContext(AuthContext);
   const showModal = () => setModalVisible(true);
   const hideModal = () => setModalVisible(false);
@@ -34,10 +35,32 @@ export default function PreferenceProfile() {
           Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
         },
       });
+      setPreference(data[0].preference);
       setDataUser(data);
     } catch (error) {
       alert(error.message);
     }
+  };
+
+  const handleSubmit = async (id) => {
+    try {
+      const input = {
+        preference,
+      };
+      await axios({
+        method: "patch",
+        url: `http://localhost:3000/user/${id}`,
+        data: input,
+        headers: {
+          Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
+        },
+      });
+      alert("Your preference has been successfully updated");
+      getUserById();
+    } catch (error) {
+      alert(error.message);
+    }
+    navigation.navigate("PreferenceProfile");
   };
 
   useEffect(() => {
@@ -79,7 +102,7 @@ export default function PreferenceProfile() {
                 <Text style={styles.labelPref}> Preference </Text>
                 <TextInput
                   placeholder="your preference"
-                  value={selectedLabel}
+                  value={preference ? preference : selectedLabel}
                   style={{
                     flexDirection: "row",
                     flex: 0.8,
@@ -103,7 +126,7 @@ export default function PreferenceProfile() {
                   <Picker
                     selectedValue={selectedValue}
                     onValueChange={(itemValue, itemIndex) => {
-                      setSelectedValue(itemValue);
+                      setPreference(itemValue);
                       setSelectedLabel(
                         itemIndex === 0
                           ? ""
@@ -115,10 +138,13 @@ export default function PreferenceProfile() {
                           ? "Chinese Food"
                           : itemIndex === 4
                           ? "Indonesian Food"
+                          : itemIndex === 5
+                          ? "Japanese Food"
                           : "",
                       );
                       hideModal();
                     }}
+                    name="preference"
                     style={styles.picker}>
                     <Picker.Item
                       label="Select your preference"
@@ -140,6 +166,10 @@ export default function PreferenceProfile() {
                       label="Indonesian Food"
                       value="Indonesian Food"
                     />
+                    <Picker.Item
+                      label="Japanese Food"
+                      value="Japanese Food"
+                    />
                   </Picker>
                 </View>
               </Modal>
@@ -147,7 +177,8 @@ export default function PreferenceProfile() {
             <View>
               <TouchableOpacity
                 title="save"
-                onPress={() => navigation.navigate("MainProfile")}
+                // onPress={() => navigation.navigate("MainProfile")}
+                onPress={handleSubmit}
                 style={{
                   backgroundColor: "#F24822",
                   padding: 10,

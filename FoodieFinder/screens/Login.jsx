@@ -1,4 +1,11 @@
-import { View, Text, Button, TextInput, KeyboardAvoidingView, Platform } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { StyleSheet, Image } from "react-native";
 import { TouchableOpacity } from "react-native";
 import axios from "axios";
@@ -10,7 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setIsSignedIn } = useContext(AuthContext);
+  const { setIsSignedIn, fetchData } = useContext(AuthContext);
   const navigation = useNavigation();
 
   const handleSubmit = async () => {
@@ -30,13 +37,17 @@ export default function Login() {
       await SecureStore.setItemAsync("userId", data?.user._id);
 
       setIsSignedIn(true);
+      await fetchData();
     } catch (error) {
       alert(error.response.data.message);
     }
   };
   return (
     <>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : null} keyboardVerticalOffset={Platform.OS === "ios" ? -250 : 0}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        keyboardVerticalOffset={Platform.OS === "ios" ? -250 : 0}>
         <View style={styles.container}>
           <Image
             source={require("../assets/FF-Background-Removed.png")}

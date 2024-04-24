@@ -94,6 +94,7 @@ export default function AddPost() {
           }}
           name="imageUrl"
           onChangeText={setImageUrl}
+          value={imageUrl}
         />
         <View style={{ alignItems: "flex-start", width: "70%" }}>
           <Text
@@ -112,10 +113,13 @@ export default function AddPost() {
           onChangeText={setDescription}
         />
 
-
         <View>
           <TouchableOpacity
-            onPress={handleSubmit}
+            onPress={() => {
+              handleSubmit();
+              setDescription("");
+              setImageUrl("");
+            }}
             style={{
               backgroundColor: "#F24822",
               padding: 10,
