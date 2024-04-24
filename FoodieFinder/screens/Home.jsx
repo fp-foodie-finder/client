@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Modal,
   Linking,
+  ActivityIndicator
 } from "react-native";
 import { StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -19,209 +20,176 @@ import AuthContext from "../context/auth";
 import { AntDesign } from "@expo/vector-icons";
 
 export default function Home() {
-  const navigator = useNavigation();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isInputFocused, setIsInputFocused] = useState(false);
-  const [textInputKey, setTextInputKey] = useState(0);
-  const [isAddedToFavorites, setIsAddedToFavorites] = useState([]);
-  const [datas, setDatas] = useState("");
-  const [posts, setPosts] = useState("");
-  const [textQuery, setTextQuery] = useState("");
-  const { userId } = useContext(AuthContext);
+    const navigator = useNavigation();
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isInputFocused, setIsInputFocused] = useState(false);
+    const [textInputKey, setTextInputKey] = useState(0);
+    const [isAddedToFavorites, setIsAddedToFavorites] = useState([]);
+    const [datas, setDatas] = useState("");
+    const [posts, setPosts] = useState("");
+    const [textQuery, setTextQuery] = useState("");
+    const { userId } = useContext(AuthContext);
+    const [isLoading, setIsLoading] = useState(false);
 
-  const getTimeAgo = (timestamp) => {
-    return moment(timestamp).fromNow();
-  };
+    const getTimeAgo = (timestamp) => {
+        return moment(timestamp).fromNow();
+    };
 
-  const toggleLike = async (id) => {
-    try {
-      await axios({
-        method: "patch",
-        url: `http://localhost:3000/like/${id}`,
-        headers: {
-          Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
-        },
-      });
-      await handleGetPosts();
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-  const toggleUnLike = async (id) => {
-    try {
-      await axios({
-        method: "patch",
-        url: `http://localhost:3000/unlike/${id}`,
-        headers: {
-          Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
-        },
-      });
-      await handleGetPosts();
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-  const toggleDislike = async (id) => {
-    try {
-      await axios({
-        method: "patch",
-        url: `http://localhost:3000/dislike/${id}`,
-        headers: {
-          Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
-        },
-      });
-      await handleGetPosts();
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-  const toggleUnDisLike = async (id) => {
-    try {
-      await axios({
-        method: "patch",
-        url: `http://localhost:3000/undislike/${id}`,
-        headers: {
-          Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
-        },
-      });
-      await handleGetPosts();
-    } catch (error) {
-      alert(error.message);
-    }
-  };
+    const toggleLike = async (id) => {
+        try {
+            await axios({
+                method: "patch",
+                url: `http://localhost:3000/like/${id}`,
+                headers: {
+                    Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
+                },
+            });
+            await handleGetPosts();
+        } catch (error) {
+            alert(error.message);
+        }
+    };
+    const toggleUnLike = async (id) => {
+        try {
+            await axios({
+                method: "patch",
+                url: `http://localhost:3000/unlike/${id}`,
+                headers: {
+                    Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
+                },
+            });
+            await handleGetPosts();
+        } catch (error) {
+            alert(error.message);
+        }
+    };
+    const toggleDislike = async (id) => {
+        try {
+            await axios({
+                method: "patch",
+                url: `http://localhost:3000/dislike/${id}`,
+                headers: {
+                    Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
+                },
+            });
+            await handleGetPosts();
+        } catch (error) {
+            alert(error.message);
+        }
+    };
+    const toggleUnDisLike = async (id) => {
+        try {
+            await axios({
+                method: "patch",
+                url: `http://localhost:3000/undislike/${id}`,
+                headers: {
+                    Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
+                },
+            });
+            await handleGetPosts();
+        } catch (error) {
+            alert(error.message);
+        }
+    };
+    const openModal = () => {
+        setIsModalVisible(true);
+    };
 
-  const openModal = () => {
-    setIsModalVisible(true);
-  };
+    const closeModal = () => {
+        setIsModalVisible(false);
+    };
 
-  const closeModal = () => {
-    setIsModalVisible(false);
-  };
+    const handleFocus = () => {
+        setIsInputFocused(true);
+    };
 
-  const handleFocus = () => {
-    setIsInputFocused(true);
-  };
+    const handleBlur = () => {
+        setIsInputFocused(false);
+    };
 
-  const handleBlur = () => {
-    setIsInputFocused(false);
-  };
+    const handleSubmit = async () => {
+        try {
+            setIsLoading(true);
 
-  const handleSubmit = async () => {
-    try {
-      const input = {
-        textQuery,
-      };
-      const { data } = await axios({
-        method: "post",
-        url: "http://localhost:3000/maps",
-        data: input,
-        headers: {
-          Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
-        },
-      });
-      setDatas(data);
-      openModal();
-    } catch (error) {
-      alert(error.message);
-    }
-  };
+            const input = {
+                textQuery,
+            };
 
-  const resetTextInput = () => {
-    setTextInputKey((prevKey) => prevKey + 1);
-    setTextQuery("");
-  };
+            const { data } = await axios({
+                method: "post",
+                url: "http://localhost:3000/maps",
+                data: input,
+                headers: {
+                    Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
+                },
+            });
+            setDatas(data);
+            openModal();
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-  const handleAddToFavorites = async (index) => {
-    try {
-      const input = {
-        textQuery,
-      };
-      const { data } = await axios({
-        method: "post",
-        url: "http://localhost:3000/favorite/" + index,
-        data: input,
-        headers: {
-          Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
-        },
-      });
-      // console.log(data.newFavorite.name);
-      alert("Restaurant has been successfully added to favorites");
-      setIsAddedToFavorites([...isAddedToFavorites, data.newFavorite.name]);
-    } catch (error) {
-      alert(error.message);
-    }
-  };
+    const resetTextInput = () => {
+        setTextInputKey((prevKey) => prevKey + 1);
+        setTextQuery("");
+    };
 
-  const handleGetPosts = async () => {
-    try {
-      const { data } = await axios({
-        method: "get",
-        url: "http://localhost:3000/post",
-        headers: {
-          Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
-        },
-      });
-      setPosts(data);
-    } catch (error) {}
-  };
+    const handleAddToFavorites = async (index) => {
+        try {
+            const input = {
+                textQuery,
+            };
+            const { data } = await axios({
+                method: "post",
+                url: "http://localhost:3000/favorite/" + index,
+                data: input,
+                headers: {
+                    Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
+                },
+            });
+            // console.log(data.newFavorite.name);
+            alert("Restaurant has been successfully added to favorites");
+            setIsAddedToFavorites([...isAddedToFavorites, data.newFavorite.name]);
+        } catch (error) {
+            alert(error.message);
+        }
+    };
 
-  useEffect(() => {
-    const unsubscribe = navigator.addListener("focus", () => {
-      resetTextInput();
-    });
+    const handleGetPosts = async () => {
+        try {
+            const { data } = await axios({
+                method: "get",
+                url: "http://localhost:3000/post",
+                headers: {
+                    Authorization: "Bearer " + (await SecureStore.getItemAsync("token")),
+                },
+            });
+            setPosts(data);
+            setIsLoading(false);
+        } catch (error) { }
+    };
 
-    return unsubscribe;
-  }, [navigator]);
+    useEffect(() => {
+        const unsubscribe = navigator.addListener("focus", () => {
+            resetTextInput();
+        });
 
-  useFocusEffect(
-    useCallback(() => {
-      handleGetPosts();
-    }, []),
-  );
+        return unsubscribe;
+    }, [navigator]);
 
-  return (
-    <ScrollView style={{ backgroundColor: "white" }}>
-      <View style={styles.container}>
-        <View style={styles.formContainer}>
-          <View
-            style={[
-              styles.inputContainer,
-              { marginBottom: isInputFocused ? 1 : 1 },
-            ]}>
-            <TextInput
-              key={textInputKey}
-              placeholder="What are u craving for?"
-              style={[styles.input, { flex: isInputFocused ? 1 : 1 }]}
-              onChangeText={setTextQuery}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-              name="textQuery"
-            />
-            <TouchableOpacity
-              style={styles.submitButton}
-              onPress={handleSubmit}>
-              <Text style={styles.submitButtonText}>→</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.textContainer}>
-          <Text style={styles.text}>
-            Having a problem with your craving for something?{" "}
-          </Text>
-          <TouchableOpacity onPress={() => navigator.navigate("AskUs")}>
-            <Text style={styles.askUsLink}>Ask us!</Text>
-          </TouchableOpacity>
-        </View>
-        <Modal
-          visible={isModalVisible}
-          animationType="slide"
-          transparent={true}
-          onRequestClose={closeModal}>
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                {datas &&
-                  datas?.data?.places?.map((item, index) => (
+    useFocusEffect(
+        useCallback(() => {
+            handleGetPosts();
+        }, []),
+    );
+
+    return (
+        <ScrollView style={{ backgroundColor: "white" }}>
+            <View style={styles.container}>
+                <View style={styles.formContainer}>
                     <View
                       style={styles.containerCardModal}
                       key={index}>
@@ -309,67 +277,89 @@ export default function Home() {
                     <Text style={styles.time}>
                       {getTimeAgo(item.createdAt)}
                     </Text>
-                  </View>
-                </TouchableOpacity>
-                <Text style={styles.content}>{item.description}</Text>
-                <Image
-                  source={{
-                    uri: `${item.imageUrl}`,
-                  }}
-                  style={styles.image}
-                />
-                <TouchableOpacity>
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <AntDesign
-                      onPress={() => {
-                        if (item.dislike.includes(userId)) {
-                          alert("You need to undislike this post");
-                        } else if (item.like.includes(userId)) {
-                          toggleUnLike(item._id);
-                          alert("Post unliked");
-                        } else {
-                          toggleLike(item._id);
-                          alert("Post liked");
-                        }
-                      }}
-                      name={item.like.includes(userId) ? "like1" : "like2"}
-                      size={25}
-                      style={{
-                        display: "flex",
-                        padding: 5,
-                      }}
-                    />
-                    <Text style={{ marginRight: 10 }}>{item.like.length}</Text>
-                    <AntDesign
-                      onPress={() => {
-                        if (item.like.includes(userId)) {
-                          alert("You need to unlike this post");
-                        } else if (item.dislike.includes(userId)) {
-                          toggleUnDisLike(item._id);
-                          alert("Post undisliked");
-                        } else {
-                          toggleDislike(item._id);
-                          alert("Post disliked");
-                        }
-                      }}
-                      name={
-                        item.dislike.includes(userId) ? "dislike1" : "dislike2"
-                      }
-                      size={25}
-                      style={{
-                        display: "flex",
-                        padding: 5,
-                      }}
-                    />
-                    <Text>{item.dislike.length}</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
+                    <TouchableOpacity onPress={() => navigator.navigate("AskUs")}>
+                        <Text style={styles.askUsLink}>Ask us!</Text>
+                    </TouchableOpacity>
+                </View>
+                {posts &&
+                    posts.map((item, index) => (
+                        <View key={index}>
+                            <View style={styles.containerCard}>
+                                <TouchableOpacity
+                                    style={styles.header}
+                                    onPress={() => navigator.navigate("UserProfile")}>
+                                    <Image
+                                        source={{
+                                            uri: `https://source.unsplash.com/random/300x200?sig=${index}`,
+                                        }}
+                                        style={styles.avatar}
+                                    />
+                                    <View>
+                                        <Text style={styles.author}>{item.author.username}</Text>
+                                        <Text style={styles.time}>
+                                            {getTimeAgo(item.createdAt)}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <Text style={styles.content}>{item.description}</Text>
+                                <Image
+                                    source={{
+                                        uri: `${item.imageUrl}`,
+                                    }}
+                                    style={styles.image}
+                                />
+                                <TouchableOpacity>
+                                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                        <AntDesign
+                                            onPress={() => {
+                                                if (item.dislike.includes(userId)) {
+                                                    alert("You need to undislike this post");
+                                                } else if (item.like.includes(userId)) {
+                                                    toggleUnLike(item._id);
+                                                    alert("Post unliked");
+                                                } else {
+                                                    toggleLike(item._id);
+                                                    alert("Post liked");
+                                                }
+                                            }}
+                                            name={item.like.includes(userId) ? "like1" : "like2"}
+                                            size={25}
+                                            style={{
+                                                display: "flex",
+                                                padding: 5,
+                                            }}
+                                        />
+                                        <Text style={{ marginRight: 10 }}>{item.like.length}</Text>
+                                        <AntDesign
+                                            onPress={() => {
+                                                if (item.like.includes(userId)) {
+                                                    alert("You need to unlike this post");
+                                                } else if (item.dislike.includes(userId)) {
+                                                    toggleUnDisLike(item._id);
+                                                    alert("Post undisliked");
+                                                } else {
+                                                    toggleDislike(item._id);
+                                                    alert("Post disliked");
+                                                }
+                                            }}
+                                            name={
+                                                item.dislike.includes(userId) ? "dislike1" : "dislike2"
+                                            }
+                                            size={25}
+                                            style={{
+                                                display: "flex",
+                                                padding: 5,
+                                            }}
+                                        />
+                                        <Text>{item.dislike.length}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    ))}
             </View>
-          ))}
-      </View>
-    </ScrollView>
-  );
+        </ScrollView>
+    );
 }
 
 const styles = StyleSheet.create({
